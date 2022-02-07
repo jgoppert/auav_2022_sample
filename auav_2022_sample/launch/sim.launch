@@ -1,0 +1,73 @@
+<launch>
+  <!-- gazebo configs -->
+  <arg name="gui" default="true"/>
+  <arg name="debug" default="false"/>
+  <arg name="verbose" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="interactive" default="false"/>
+  <arg name="world" default="$(find auav_2022_sample)/worlds/test.world"/>
+
+  <!--px4 configs -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="R" default="0"/>
+  <arg name="P" default="0"/>
+  <arg name="Y" default="0"/>
+  <arg name="vehicle" default="sample_drone"/>
+  <arg name="est" default="ekf2"/>
+  <arg name="sdf" default="$(find auav_2022_sample)/models/$(arg vehicle)/$(arg vehicle).sdf"/>
+  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+
+  <!--px4 software in the loop-->
+  <env name="PX4_SIM_MODEL" value="iris" />
+  <env name="PX4_ESTIMATOR" value="ekf2" />
+  <node name="sitl" pkg="px4" type="px4" output="screen" launch-prefix="xterm -e"
+    args="$(find px4)/../../../build/px4/etc -s etc/init.d-posix/rcS" required="true"/>
+
+  <!--gazebo-->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="gui" value="$(arg gui)"/>
+      <arg name="world_name" value="$(arg world)"/>
+      <arg name="debug" value="$(arg debug)"/>
+      <arg name="verbose" value="$(arg verbose)"/>
+      <arg name="paused" value="$(arg paused)"/>
+      <arg name="respawn_gazebo" value="false"/>
+  </include>
+
+  <!--spawn vehicle model in gazebo-->
+  <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
+
+  <!-- mavros -->
+  <include file="$(find mavros)/launch/node.launch">
+    <arg name="pluginlists_yaml" value="$(find auav_2022_sample)/launch/px4_pluginlists.yaml" />
+    <arg name="config_yaml" value="$(find auav_2022_sample)/launch/px4_config.yaml" />
+    <arg name="fcu_url" value="udp://:14540@localhost:14557"/>
+    <!-- GCS link is provided by SITL -->
+    <arg name="gcs_url" value="" />
+    <arg name="tgt_system" value="1" />
+    <arg name="tgt_component" value="1" />
+    <arg name="log_output" value="screen" />
+    <arg name="fcu_protocol" value="v2.0" />
+    <arg name="respawn_mavros" default="false" />
+  </include>
+
+  <!-- Launch local planner -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="local_origin_map" args="0 0 0 0 0 0 local_origin map"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_fcu" args="0 0 0 0 0 0 base_link fcu"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_camera_link" args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+  <arg name="pointcloud_topics" default="[/camera/depth/points]"/>
+  <arg name="manager"             default="local_planner_manager"/>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="local_planner_nodelet" args="load LocalPlannerNodelet $(arg manager)" output="screen">
+    <param name="goal_x_param" value="17" />
+    <param name="goal_y_param" value="15"/>
+    <param name="goal_z_param" value="3" />
+    <!--<param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" />-->
+    <rosparam param="pointcloud_topics" subst_value="True">$(arg pointcloud_topics)</rosparam>
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find local_planner)/resource/local_planner.rviz" />
+
+</launch>
