@@ -10,3 +10,4 @@ plugin_whitelist:
 - param
 - waypoint
 - altitude
+- imu

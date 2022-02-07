@@ -52,7 +52,7 @@
     <arg name="gcs_url" value="" />
     <arg name="tgt_system" value="1" />
     <arg name="tgt_component" value="1" />
-    <arg name="log_output" value="log" />
+    <arg name="log_output" value="screen" />
     <arg name="fcu_protocol" value="v2.0" />
     <arg name="respawn_mavros" default="false" />
   </include>
