@@ -1,0 +1,3 @@
+[submodule "catkin_purt"]
+	path = catkin_purt
+	url = git@github.com:jgoppert/catkin_purt.git
