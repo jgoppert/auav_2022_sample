@@ -2,7 +2,7 @@
   <!-- gazebo configs -->
   <arg name="gui" default="true"/>
   <arg name="debug" default="false"/>
-  <arg name="verbose" default="true"/>
+  <arg name="verbose" default="false"/>
   <arg name="paused" default="false"/>
   <arg name="interactive" default="false"/>
   <arg name="world" default="$(find auav_2022_sample)/worlds/test.world"/>
@@ -52,13 +52,12 @@
     <arg name="gcs_url" value="" />
     <arg name="tgt_system" value="1" />
     <arg name="tgt_component" value="1" />
-    <arg name="log_output" value="screen" />
+    <arg name="log_output" value="log" />
     <arg name="fcu_protocol" value="v2.0" />
     <arg name="respawn_mavros" default="false" />
   </include>
 
   <!-- Launch local planner -->
-  <relay name="goal_relay" type="relay" pkg="topic_tools" from="move_base_simple/goal" to="input/goal_position"/>
   <node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"
     args="0 0 0 0 0 0 /base_link /fcu 10"/>
   <node pkg="tf" type="static_transform_publisher" name="tf_fcu_camera"
@@ -68,7 +67,8 @@
   <arg name="pointcloud_topics" default="[/camera/depth/points]"/>
 
   <node pkg="nodelet" type="nodelet" name="local_planner_manager" args="manager" output="log"/>
-  <node pkg="nodelet" type="nodelet" name="local_planner" args="load LocalPlannerNodelet local_planner_manager" output="log">
+  <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
+  <node pkg="nodelet" type="nodelet" name="local_planner" args="load LocalPlannerNodelet local_planner_manager" output="log" launch-prefix="bash -c 'sleep 15; $0 $@' ">
     <param name="goal_x_param" value="3" />
     <param name="goal_y_param" value="0"/>
     <param name="goal_z_param" value="2" />
