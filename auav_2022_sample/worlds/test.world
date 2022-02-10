@@ -48,5 +48,17 @@
       <real_time_update_rate>250</real_time_update_rate>
       <magnetic_field>6.0e-6 2.3e-5 -4.2e-5</magnetic_field>
     </physics>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>-5 0 1 0 0 0</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+		<track_visual>
+		  <name>drone</name>
+		  <min_dist>1.0</min_dist>
+		  <max_dist>20.0</max_dist>
+		</track_visual>
+      </camera>
+    </gui>
   </world>
 </sdf>

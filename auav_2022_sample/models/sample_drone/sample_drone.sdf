@@ -6,7 +6,7 @@
     </include>
 
     <include>
-      <uri>model://depth_camera</uri>
+      <uri>model://sample_depth_camera</uri>
       <pose>0.1 0 0 0 0 0</pose>
     </include>
     <joint name="depth_camera_joint" type="revolute">

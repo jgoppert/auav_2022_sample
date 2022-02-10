@@ -3,4 +3,4 @@
 	url = git@github.com:jgoppert/catkin_purt.git
 [submodule "avoidance"]
 	path = avoidance
-	url = git@github.com:PX4/PX4-Avoidance.git
+	url = git@github.com:jgoppert/PX4-Avoidance.git
