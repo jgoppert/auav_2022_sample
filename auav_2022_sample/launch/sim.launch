@@ -28,8 +28,15 @@
   <group ns="drone" clear_params="true">
 
     <!--spawn vehicle model in gazebo-->
-    <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="log"
+    <node name="drone_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
       args="-sdf -file $(find auav_2022_sample)/models/sample_drone/sample_drone.sdf -model drone -x 0 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+
+    <!--spawn vehicle model in gazebo-->
+    <node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
+      args="-sdf -file $(find auav_2022_sample)/models/axial_scx10/model.sdf -model rover -x 2 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+
+    <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
+    <node pkg="auav_2022_sample" type="drive_rover.py" name="drive_rover" args="" output="log" launch-prefix="bash -c 'sleep 15; $0 $@' "/>
 
     <!--px4 software in the loop-->
     <env name="PX4_SIM_MODEL" value="iris" />
@@ -74,3 +81,5 @@
   </group>
 
 </launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->
