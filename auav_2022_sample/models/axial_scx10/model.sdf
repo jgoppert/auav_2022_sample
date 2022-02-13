@@ -250,6 +250,10 @@
           <lower>-0.3</lower>
           <upper>0.3</upper>
         </limit>
+        <dynamics>
+          <friction>0</friction>
+          <damping>0</damping>
+        </dynamics>
       </axis>
     </joint>
 
@@ -262,6 +266,10 @@
           <lower>-0.3</lower>
           <upper>0.3</upper>
         </limit>
+        <dynamics>
+          <friction>0</friction>
+          <damping>0</damping>
+        </dynamics>
       </axis>
     </joint>
 
@@ -270,6 +278,10 @@
       <parent>left_front_steer</parent>
       <axis>
         <xyz>0 0 1</xyz>
+        <dynamics>
+          <friction>0.01</friction>
+          <damping>0.001</damping>
+        </dynamics>
       </axis>
     </joint>
 
@@ -278,6 +290,10 @@
       <parent>right_front_steer</parent>
       <axis>
         <xyz>0 0 1</xyz>
+        <dynamics>
+          <friction>0.01</friction>
+          <damping>0.001</damping>
+        </dynamics>
       </axis>
     </joint>
 
@@ -287,6 +303,10 @@
       <parent>chassis</parent>
       <axis>
         <xyz>0 0 1</xyz>
+        <dynamics>
+          <friction>0.01</friction>
+          <damping>0.001</damping>
+        </dynamics>
       </axis>
     </joint>
 
@@ -296,6 +316,10 @@
       <parent>chassis</parent>
       <axis>
         <xyz>0 0 1</xyz>
+        <dynamics>
+          <friction>0.01</friction>
+          <damping>0.001</damping>
+        </dynamics>
       </axis>
     </joint>
 
