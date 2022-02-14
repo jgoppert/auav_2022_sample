@@ -68,9 +68,9 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>0.001</ixx>
-          <iyy>0.001</iyy>
-          <izz>0.001</izz>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
         </inertia>
       </inertial>
 
@@ -145,9 +145,9 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>0.001</ixx>
-          <iyy>0.001</iyy>
-          <izz>0.001</izz>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
         </inertia>
       </inertial>
       <collision name="collision">
@@ -183,9 +183,9 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>0.001</ixx>
-          <iyy>0.001</iyy>
-          <izz>0.001</izz>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
         </inertia>
       </inertial>
 
@@ -222,9 +222,9 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>0.001</ixx>
-          <iyy>0.001</iyy>
-          <izz>0.001</izz>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
         </inertia>
       </inertial> 
     </link>
@@ -234,9 +234,9 @@
       <inertial>
         <mass>0.01</mass>
         <inertia>
-          <ixx>0.001</ixx>
-          <iyy>0.001</iyy>
-          <izz>0.001</izz>
+          <ixx>0.01</ixx>
+          <iyy>0.01</iyy>
+          <izz>0.01</izz>
         </inertia>
       </inertial> 
     </link>
@@ -251,8 +251,8 @@
           <upper>0.3</upper>
         </limit>
         <dynamics>
-          <friction>0</friction>
-          <damping>0</damping>
+          <friction>0.03</friction>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -267,8 +267,8 @@
           <upper>0.3</upper>
         </limit>
         <dynamics>
-          <friction>0</friction>
-          <damping>0</damping>
+          <friction>0.03</friction>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -280,7 +280,7 @@
         <xyz>0 0 1</xyz>
         <dynamics>
           <friction>0.01</friction>
-          <damping>0.001</damping>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -292,7 +292,7 @@
         <xyz>0 0 1</xyz>
         <dynamics>
           <friction>0.01</friction>
-          <damping>0.001</damping>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -305,7 +305,7 @@
         <xyz>0 0 1</xyz>
         <dynamics>
           <friction>0.01</friction>
-          <damping>0.001</damping>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -318,7 +318,7 @@
         <xyz>0 0 1</xyz>
         <dynamics>
           <friction>0.01</friction>
-          <damping>0.001</damping>
+          <damping>0.01</damping>
         </dynamics>
       </axis>
     </joint>
@@ -326,4 +326,4 @@
   </model>
 </sdf>
 
-<!-- vim set ft=xml ts=2 sw=2 et: -->
+<!-- vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

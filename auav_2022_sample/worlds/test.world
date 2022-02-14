@@ -15,7 +15,7 @@
     <include>
 	  <name>wall1</name>
       <uri>model://brick_box_3x1x3</uri>
-	  <pose>5 -3 0 0 0 1.57</pose>
+	  <pose>15 -6 0 0 0 1.57</pose>
     </include>
     <include>
 	  <name>wall2</name>
@@ -25,7 +25,7 @@
     <include>
 	  <name>wall3</name>
       <uri>model://brick_box_3x1x3</uri>
-	  <pose>5 3 0 0 0 1.57</pose>
+	  <pose>15 6 0 0 0 1.57</pose>
     </include>
     <physics name='default_physics' default='0' type='ode'>
       <gravity>0 0 -9.8066</gravity>
