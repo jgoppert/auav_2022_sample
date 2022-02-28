@@ -1,6 +1,6 @@
 [submodule "catkin_purt"]
 	path = catkin_purt
-	url = git@github.com:jgoppert/catkin_purt.git
+	url = https://github.com/jgoppert/catkin_purt.git
 [submodule "avoidance"]
 	path = avoidance
-	url = git@github.com:jgoppert/PX4-Avoidance.git
+	url = https://github.com/jgoppert/PX4-Avoidance.git
