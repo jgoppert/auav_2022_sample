@@ -201,7 +201,7 @@
       <script>
         <loop>true</loop>
         <!--Setting delay start causes crash-->
-        <delay_start>0.0</delay_start>
+        <delay_start>0</delay_start>
         <auto_start>true</auto_start>
         <trajectory id="0" type="square">
           <waypoint>
@@ -209,15 +209,15 @@
             <pose>-8 0 0.05 0 0 0</pose>
           </waypoint>
           <waypoint>
-            <time>10.0</time>
+            <time>20.0</time>
             <pose>-8 0 0.05 0 0 0</pose>
           </waypoint>
           <waypoint>
-            <time>30.0</time>
+            <time>40.0</time>
             <pose>8 0 0.05 0 0 0</pose>
           </waypoint>
           <waypoint>
-            <time>50.0</time>
+            <time>60.0</time>
             <pose>0 0 0.05 0 0 0</pose>
           </waypoint>
         </trajectory>

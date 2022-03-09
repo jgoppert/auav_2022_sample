@@ -5,7 +5,7 @@
   <arg name="verbose" default="true"/>
   <arg name="paused" default="false"/>
   <arg name="interactive" default="false"/>
-  <arg name="world" default="$(find auav_2022_sample)/worlds/test.world"/>
+  <arg name="world" default="$(find auav_2022_sample)/worlds/trial_1.world"/>
   <param name="use_sim_time" value="true" />
 
   <!-- Launch rqt_reconfigure -->
@@ -29,14 +29,14 @@
 
     <!--spawn vehicle model in gazebo-->
     <node name="drone_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
-      args="-sdf -file $(find auav_2022_sample)/models/sample_drone/sample_drone.sdf -model drone -x 0 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+      args="-sdf -file $(find auav_2022_sample)/models/sample_drone/sample_drone.sdf -model drone -x -11 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
 
     <!--spawn vehicle model in gazebo-->
     <!--<node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="log"-->
       <!--args="-sdf -file $(find auav_2022_sample)/models/axial_scx10/model.sdf -model rover -x 2 -y 0 -z 0 -R 0 -P 0 -Y 0"/>-->
 
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
-    <node pkg="auav_2022_sample" type="drive_rover.py" name="drive_rover" args="" output="screen" launch-prefix="bash -c 'sleep 15; $0 $@' "/>
+    <!--<node pkg="auav_2022_sample" type="drive_rover.py" name="drive_rover" args="" output="screen" launch-prefix="bash -c 'sleep 15; $0 $@' "/>-->
 
     <!--px4 software in the loop-->
     <env name="PX4_SIM_MODEL" value="iris" />
@@ -45,18 +45,16 @@
       args="$(find px4)/../../../build/px4/etc -s etc/init.d-posix/rcS" required="true"/>
 
     <!-- mavros -->
-    <include file="$(find mavros)/launch/node.launch">
-      <arg name="pluginlists_yaml" value="$(find auav_2022_sample)/launch/px4_pluginlists.yaml" />
-      <arg name="config_yaml" value="$(find auav_2022_sample)/launch/px4_config.yaml" />
-      <arg name="fcu_url" value="udp://:14540@localhost:14557"/>
-      <!-- GCS link is provided by SITL -->
-      <arg name="gcs_url" value="" />
-      <arg name="tgt_system" value="1" />
-      <arg name="tgt_component" value="1" />
-      <arg name="log_output" value="log" />
-      <arg name="fcu_protocol" value="v2.0" />
-      <arg name="respawn_mavros" default="false" />
-    </include>
+    <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="log" respawn="false">
+      <param name="fcu_url" value="udp://:14540@localhost:14557" />
+      <param name="gcs_url" value="" />
+      <param name="target_system_id" value="1" />
+      <param name="target_component_id" value="1" />
+      <param name="fcu_protocol" value="v2.0" />
+      <!-- load blacklist, config -->
+      <rosparam command="load" file="$(find auav_2022_sample)/launch/px4_pluginlists.yaml" />
+      <rosparam command="load" file="$(find auav_2022_sample)/launch/px4_config.yaml" />
+    </node>
 
     <!-- Launch local planner -->
     <node pkg="tf" type="static_transform_publisher" name="tf_fcu_link_camera"
@@ -69,7 +67,7 @@
       args="0 0 0 0 0 0 map odom "/>
 
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
-    <node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 15; $0 $@' ">
+    <node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 10; $0 $@' ">
       <remap from="move_base_simple/goal" to="/move_base_simple/goal"/>
       <param name="goal_x_param" value="5" />
       <param name="goal_y_param" value="0"/>
