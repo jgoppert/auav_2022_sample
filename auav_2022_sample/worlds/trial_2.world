@@ -1,0 +1,304 @@
+<?xml version="1.0"?> 
+<sdf version="1.4">
+  <world name="trial_1_world">
+    <gui>
+      <camera name="user_camera">
+        <pose>0 -11.0 24.5 0 1.0 1.5708</pose>
+      </camera>
+    </gui>
+
+    <!-- Ground Plane -->
+    <include>
+      <uri>ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+<!-- Roads -->
+    <include>
+      <uri>model://asphalt_road</uri>      
+      <name>road1</name>
+      <pose>0 0.5 0 0 -0 1.57</pose>
+    </include>
+
+    <include>
+      <uri>model://asphalt_road</uri>      
+      <name>road2</name>
+      <pose>3.5 5.43 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://asphalt_road</uri>      
+      <name>road3</name>
+      <pose>0 10 0 0 -0 1.57</pose>
+    </include>
+
+    <include>
+      <uri>model://asphalt_road</uri>      
+      <name>road4</name>
+      <pose>-3.5 5.43 0 0 -0 0</pose>
+    </include>
+<!-- Buildings Block 1 -->
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building1</name>
+      <pose>1.85 2.34 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_1</uri>      
+      <name>building2</name>
+      <pose>1.85 5.29 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building3</name>
+      <pose>1.85 8.29 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_2</uri>      
+      <name>building4</name>
+      <pose>0 7.14 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_1</uri>      
+      <name>building5</name>
+      <pose>-1.85 7.14 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_3</uri>      
+      <name>building6</name>
+      <pose>-0.92 3.08 0.0 0 0 0</pose>
+    </include>
+
+<!-- Buildings Block 2 -->
+
+
+    <include>
+      <uri>model://office_1</uri>      
+      <name>building21</name>
+      <pose>1.87 -2.35 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building22</name>
+      <pose>-5.21 8.29 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_2</uri>      
+      <name>building23</name>
+      <pose>-6.90 7.14 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_3</uri>      
+      <name>building24</name>
+      <pose>-8.50 3.08 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_2</uri>      
+      <name>building25</name>
+      <pose>-5.23 3.808 0.0 0 0 0</pose>
+    </include>
+
+<!-- Buildings Block 3 -->
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building31</name>
+      <pose>1.85 11.86 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_2</uri>      
+      <name>building32</name>
+      <pose>0 13.22 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_1</uri>      
+      <name>building33</name>
+      <pose>-1.85 13.22 0.0 0 0 0</pose>
+    </include>
+
+<!-- Buildings Block 4 -->
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building41</name>
+      <pose>5.16 2.34 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_1</uri>      
+      <name>building42</name>
+      <pose>5.16 5.29 0.0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://office_0</uri>      
+      <name>building43</name>
+      <pose>5.16 8.29 0.0 0 0 0</pose>
+    </include>
+
+    <actor name='pickup'>
+      <skin>
+        <filename>model://pickup/meshes/pickup.dae</filename>
+      </skin>
+      <link name='link'>
+        <visual name='visual'>
+          <pose>0 0 0 0 0 -1.5708</pose>
+          <geometry>
+            <mesh>
+              <uri>model://pickup/meshes/pickup.dae</uri>
+              <scale>0.2 0.2 0.2</scale>
+            </mesh>
+          </geometry>
+          <!--<material>-->
+            <!--<script>-->
+              <!--<name>ModelPreview_10::link::visual_MATERIAL_</name>-->
+              <!--<uri>__default__</uri>-->
+            <!--</script>-->
+            <!--<ambient>0.999 0.999 0.999 1</ambient>-->
+            <!--<diffuse>0.999 0.999 0.999 1</diffuse>-->
+            <!--<specular>0.999 0.999 0.999 1</specular>-->
+            <!--<emissive>0 0 0 1</emissive>-->
+            <!--<shader type='vertex'>-->
+              <!--<normal_map>__default__</normal_map>-->
+            <!--</shader>-->
+          <!--</material>-->
+        </visual>
+        <collision name='collision'>
+          <pose>0 0 0 0 0 -1.5708</pose>
+          <geometry>
+            <mesh>
+              <uri>model://pickup/meshes/pickup.dae</uri>
+              <scale>0.2 0.2 0.2</scale>
+            </mesh>
+          </geometry>
+        </collision>
+      </link>
+      <link name='ball'>
+        <static>1</static>
+        <pose>-0.358248 0.002769 0.300093 0 -0 0</pose>
+        <visual name='visual'>
+          <geometry>
+            <sphere>
+              <radius>0.122785</radius>
+            </sphere>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Red</name>
+            </script>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <sphere>
+              <radius>0.122785</radius>
+            </sphere>
+          </geometry>
+        </collision>
+      </link>
+      <script>
+        <loop>true</loop>
+        <!--Setting delay start causes crash-->
+        <delay_start>0.0</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="square">
+          <waypoint>
+            <time>0.0</time>
+            <pose>0 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>2.0</time>
+            <pose>1 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>4.0</time>
+            <pose>1.5 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>6.0</time>
+            <pose>2.33 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>10.0</time>
+            <pose>3 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>12.0</time>
+            <pose>3.5 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>14.0</time>
+            <pose>3.7 0.5 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>18.0</time>
+            <pose>4 4 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>21.0</time>
+            <pose>4 8.5 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>24.0</time>
+            <pose>4 9.0 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>26.0</time>
+            <pose>4 10.4 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>28.0</time>
+            <pose>3.6 10.4 0.05 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+            <time>30.0</time>
+            <pose>2.0 10.4 0.05 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+            <time>36.0</time>
+            <pose>-2.0 10.4 0.05 0 0 3.141</pose>
+          </waypoint>
+          <waypoint>
+            <time>38.0</time>
+            <pose>-3.7 9.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>40.0</time>
+            <pose>-3.7 5.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>44.0</time>
+            <pose>-3.7 1.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>48.0</time>
+            <pose>-2.7 0.5 0.05 0 0 5.49</pose>
+          </waypoint>
+          <waypoint>
+            <time>50.0</time>
+            <pose>0 0 0.05 0 0 6.28</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+ 
+  
+  </world>
+</sdf>
+
+<!-- vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->
