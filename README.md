@@ -18,7 +18,14 @@ git submodule update --init --recursive
 catkin build
 ```
 
-Run the simulation for each trail.
+Run the simulation for each trial.
+
+**Note: To fly PX4 you will need to have QGroundControl running and manually arm it and put it in
+offboard mode. For the competition we do not want your scirpts to do this automatically. For testing and in simulation, you can have a script that manually arms the drone and puts it in offboard mode.**
+
+We are following this safety procedure so that the pilot will have the only 
+authority to arm the drone and switch the mode to offboard from the RC transmitter.
+
 ```bash
 cd ~/catkin
 . ./devel/setup.bash
