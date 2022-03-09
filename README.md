@@ -33,5 +33,3 @@ each drone with the command:
 ```bash
 roslaunch auav_2022_sample live.launch
 ```
-
-T
