@@ -163,19 +163,6 @@
               <scale>0.2 0.2 0.2</scale>
             </mesh>
           </geometry>
-          <!--<material>-->
-            <!--<script>-->
-              <!--<name>ModelPreview_10::link::visual_MATERIAL_</name>-->
-              <!--<uri>__default__</uri>-->
-            <!--</script>-->
-            <!--<ambient>0.999 0.999 0.999 1</ambient>-->
-            <!--<diffuse>0.999 0.999 0.999 1</diffuse>-->
-            <!--<specular>0.999 0.999 0.999 1</specular>-->
-            <!--<emissive>0 0 0 1</emissive>-->
-            <!--<shader type='vertex'>-->
-              <!--<normal_map>__default__</normal_map>-->
-            <!--</shader>-->
-          <!--</material>-->
         </visual>
         <collision name='collision'>
           <pose>0 0 0 0 0 -1.5708</pose>

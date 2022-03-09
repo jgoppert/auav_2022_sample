@@ -174,30 +174,6 @@
           </geometry>
         </collision>
       </link>
-      <link name='ball'>
-        <static>1</static>
-        <pose>-0.358248 0.002769 0.300093 0 -0 0</pose>
-        <visual name='visual'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Red</name>
-            </script>
-          </material>
-        </visual>
-        <collision name='collision'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-        </collision>
-      </link>
       <script>
         <loop>true</loop>
         <!--Setting delay start causes crash-->

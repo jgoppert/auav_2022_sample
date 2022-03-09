@@ -16,7 +16,7 @@
       <uri>model://sun</uri>
     </include>
 <!-- Roads -->
-   <include>
+    <include>
       <uri>model://asphalt_road</uri>      
       <name>road1</name>
       <pose>0 0.5 0 0 -0 1.57</pose>
@@ -150,6 +150,24 @@
       <pose>5.16 8.29 0.0 0 0 0</pose>
     </include>
 
+    <include>
+	    <name>wall1</name>
+      <uri>model://brick_box_3x1x3</uri>
+	    <pose>0 1.8 2.5 1.57 0 0</pose>
+    </include>
+
+    <include>
+	    <name>wall2</name>
+      <uri>model://brick_box_3x1x3</uri>
+	    <pose>0 2 0 0 0 0</pose>
+    </include>
+
+    <include>
+	    <name>wall3</name>
+      <uri>model://brick_box_3x1x3</uri>
+	    <pose>0 -1 0 0 0 0</pose>
+    </include>
+
     <actor name='pickup'>
       <skin>
         <filename>model://pickup/meshes/pickup.dae</filename>
@@ -174,30 +192,6 @@
           </geometry>
         </collision>
       </link>
-      <link name='ball'>
-        <static>1</static>
-        <pose>-0.358248 0.002769 0.300093 0 -0 0</pose>
-        <visual name='visual'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Red</name>
-            </script>
-          </material>
-        </visual>
-        <collision name='collision'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-        </collision>
-      </link>
       <script>
         <loop>true</loop>
         <!--Setting delay start causes crash-->
@@ -206,23 +200,84 @@
         <trajectory id="0" type="square">
           <waypoint>
             <time>0.0</time>
-            <pose>-8 0 0.05 0 0 0</pose>
+            <pose>0 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>2.0</time>
+            <pose>1 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>4.0</time>
+            <pose>1.5 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>6.0</time>
+            <pose>2.33 0 0.05 0 0 0</pose>
           </waypoint>
           <waypoint>
             <time>10.0</time>
-            <pose>-8 0 0.05 0 0 0</pose>
+            <pose>3 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>12.0</time>
+            <pose>3.5 0 0.05 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>14.0</time>
+            <pose>3.7 0.5 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>18.0</time>
+            <pose>4 4 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>21.0</time>
+            <pose>4 8.5 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>24.0</time>
+            <pose>4 9.0 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>26.0</time>
+            <pose>4 10.4 0.05 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>28.0</time>
+            <pose>3.6 10.4 0.05 0 0 3.14</pose>
           </waypoint>
           <waypoint>
             <time>30.0</time>
-            <pose>8 0 0.05 0 0 0</pose>
+            <pose>2.0 10.4 0.05 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+            <time>36.0</time>
+            <pose>-2.0 10.4 0.05 0 0 3.141</pose>
+          </waypoint>
+          <waypoint>
+            <time>38.0</time>
+            <pose>-3.7 9.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>40.0</time>
+            <pose>-3.7 5.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>44.0</time>
+            <pose>-3.7 1.0 0.05 0 0 4.71</pose>
+          </waypoint>
+          <waypoint>
+            <time>48.0</time>
+            <pose>-2.7 0.5 0.05 0 0 5.49</pose>
           </waypoint>
           <waypoint>
             <time>50.0</time>
-            <pose>0 0 0.05 0 0 0</pose>
+            <pose>0 0 0.05 0 0 6.28</pose>
           </waypoint>
         </trajectory>
       </script>
     </actor>
+ 
   
   </world>
 </sdf>
