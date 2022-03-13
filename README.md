@@ -29,10 +29,10 @@ authority to arm the drone and switch the mode to offboard from the RC transmitt
 ```bash
 cd ~/catkin
 . ./devel/setup.bash
-roslaunch auav_2022_sample world:worlds/trial_1.world sim.launch
-roslaunch auav_2022_sample world:worlds/trial_2.world sim.launch
-roslaunch auav_2022_sample world:worlds/trial_3.world sim.launch
-roslaunch auav_2022_sample world:worlds/trial_4.world sim.launch
+roslaunch auav_2022_sample sim.launch world:=worlds/trial_1.world 
+roslaunch auav_2022_sample sim.launch world:=worlds/trial_2.world 
+roslaunch auav_2022_sample sim.launch world:=worlds/trial_3.world 
+roslaunch auav_2022_sample sim.launch world:=worlds/trial_4.world 
 ```
 
 Please adapt your code to work with this framework, we expect to launch
