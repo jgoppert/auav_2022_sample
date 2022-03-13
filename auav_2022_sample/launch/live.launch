@@ -9,12 +9,6 @@
 
   <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/$(arg vehicle)/odom /mavros/odometry/out"/>
 
-  <!-- Launch rqt_reconfigure -->
-  <!--<node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />-->
-
-  <!-- rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner_live.rviz" />
-
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
 

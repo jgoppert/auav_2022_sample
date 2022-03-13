@@ -1,0 +1,9 @@
+<launch>
+  <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner_live.rviz" />
+
+  <!--Launch rqt_reconfigure -->
+  <node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />
+
+</launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->
