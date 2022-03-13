@@ -19,18 +19,16 @@
   <group ns="drone" clear_params="true">
 
     <!-- mavros -->
-    <include file="$(find mavros)/launch/node.launch">
-      <arg name="pluginlists_yaml" value="$(find auav_2022_sample)/launch/px4_pluginlists.yaml" />
-      <arg name="config_yaml" value="$(find auav_2022_sample)/launch/px4_config.yaml" />
-      <arg name="fcu_url" value="/dev/ttyUSB0:921600"/>
-      <!-- GCS link is provided by SITL -->
-      <arg name="gcs_url" value="" />
-      <arg name="tgt_system" value="1" />
-      <arg name="tgt_component" value="1" />
-      <arg name="log_output" value="log" />
-      <arg name="fcu_protocol" value="v2.0" />
-      <arg name="respawn_mavros" default="false" />
-    </include>
+    <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="log" respawn="false">
+      <param name="fcu_url" value="/dev/ttyUSB0:921600" />
+      <param name="gcs_url" value="" />
+      <param name="target_system_id" value="1" />
+      <param name="target_component_id" value="1" />
+      <param name="fcu_protocol" value="v2.0" />
+      <!-- load blacklist, config -->
+      <rosparam command="load" file="$(find auav_2022_sample)/launch/px4_pluginlists.yaml" />
+      <rosparam command="load" file="$(find auav_2022_sample)/launch/px4_config.yaml" />
+    </node>
 
     <!-- Launch local planner -->
     <node pkg="tf" type="static_transform_publisher" name="tf_fcu_link_camera"
