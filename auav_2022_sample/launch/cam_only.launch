@@ -1,0 +1,44 @@
+<launch>
+  <arg name="vehicle" default="pv125"/>
+
+  <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/$(arg vehicle)/odom /drone/mavros/odometry/out"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="qualisys_map" args="0 0 0 0 0 0 map qualisys"/>
+
+  <!-- start drone  -->
+  <group ns="drone" clear_params="true">
+
+    <arg name="serial_no"             default=""/>
+    <arg name="json_file_path"        default=""/>
+    <arg name="camera"                default="camera"/>
+
+    <group ns="$(arg camera)">
+      <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+        <arg name="serial_no"         value="$(arg serial_no)"/>
+        <arg name="json_file_path"    value="$(arg json_file_path)"/>
+        <arg name="depth_width"       value="640"/>
+        <arg name="depth_height"      value="480"/>
+        <arg name="depth_fps"         value="15"/>
+        <arg name="color_width"       value="640"/>
+        <arg name="color_height"      value="480"/>
+        <arg name="color_fps"         value="15"/>
+        <arg name="enable_depth"      value="true"/>
+        <arg name="enable_color"      value="true"/>
+        <arg name="enable_infra1"     value="false"/>
+        <arg name="enable_infra2"     value="false"/>
+        <arg name="enable_fisheye"    value="false"/>
+        <arg name="enable_gyro"       value="false"/>
+        <arg name="enable_accel"      value="false"/>
+        <arg name="enable_pointcloud" value="true"/>
+        <arg name="enable_sync"       value="true"/>
+        <arg name="tf_prefix"         value="$(arg camera)"/>
+      </include>
+    </group>
+
+    <!-- Launch object tracking node -->
+    <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/>
+
+  </group>
+
+</launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->
