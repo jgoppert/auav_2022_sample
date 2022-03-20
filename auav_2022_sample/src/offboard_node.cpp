@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     ros::Subscriber drone_pos_sub = nh.subscribe<geometry_msgs::PoseStamped>("mavros/local_position/pose", 10, droneposfdb);
 
     // Publisher used to set the setpoints
-    ros::Publisher local_pos_pub = nh.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 10);
+    ros::Publisher local_pos_pub = nh.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 10);
 
     // ROS services used for arming the drone
     // MAKE SURE YOU DO NOT SET ARMING OR VEHICLE MODE, THIS WILL BE HANDLED BY THE PILOT
