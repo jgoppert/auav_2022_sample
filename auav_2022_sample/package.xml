@@ -48,6 +48,9 @@
   <!--   <test_depend>gtest</test_depend> -->
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
+  <depend>mavros</depend>
+  <depend>qualisys</depend>
+  <depend>local_planner</depend>
   <depend>gazebo_ros</depend>
   <depend>gazebo_msgs</depend>
   <buildtool_depend>catkin</buildtool_depend>
