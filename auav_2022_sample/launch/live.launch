@@ -4,11 +4,13 @@
   <!--qualisys-->
   <node pkg="qualisys" type="node" name="qualisys" output="screen">
     <param name="server" value="192.168.123.202"/>
-    <param name="rate_limit" value="100"/>
+    <param name="rate_limit" value="15"/>
   </node>
 
   <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/$(arg vehicle)/odom /drone/mavros/odometry/out"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="qualisys_map" args="0 0 0 0 0 0 map qualisys"/>
+  <node pkg="tf" type="static_transform_publisher" name="tf_base_link_pv125"
+    args="0 0 0 0 0 0 base_link $(arg vehicle) 10"/>
+
 
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
@@ -32,8 +34,8 @@
       args="0 0 0 0 0 0 base_link fcu 10"/>
     <node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"
       args="0 0 0 0 0 0 local_origin map 10"/>
-    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_odom_map"
-      args="0 0 0 0 0 0 map odom "/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_qualisys_odom"
+      args="0 0 0 0 0 0 qualisys odom "/>
 
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
     <node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 15; $0 $@' ">
@@ -41,6 +43,7 @@
       <param name="goal_x_param" value="5" />
       <param name="goal_y_param" value="0"/>
       <param name="goal_z_param" value="2" />
+      <param name="tree_node_distance_" value="0.5" />
       <rosparam param="pointcloud_topics">[camera/depth/color/points]</rosparam>
     </node>
 
