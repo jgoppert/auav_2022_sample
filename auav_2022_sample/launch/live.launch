@@ -42,7 +42,7 @@
       <remap from="move_base_simple/goal" to="/move_base_simple/goal"/>
       <param name="goal_x_param" value="5" />
       <param name="goal_y_param" value="0"/>
-      <param name="goal_z_param" value="2" />
+      <param name="goal_z_param" value="1" />
       <param name="tree_node_distance_" value="0.5" />
       <rosparam param="pointcloud_topics">[camera/depth/color/points]</rosparam>
     </node>
