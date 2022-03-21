@@ -2,25 +2,25 @@
 {%- set arm_length = 0.14 -%}
 
 {# fuselage #}
-{%- set fuse_m = 0.3 -%}
+{%- set fuse_m = 1.5 -%}
 {%- set fuse_r = 0.25 -%}
 {%- set fuse_h = 0.13 -%}
-{%- set fuse_ixx = fuse_m/12*(3*fuse_r**2 + fuse_h**2) -%}
-{%- set fuse_iyy = fuse_ixx -%}
-{%- set fuse_izz = fuse_m*fuse_r**2/2 -%}
+{%- set fuse_ixx = 0.029125 -%}
+{%- set fuse_iyy = 0.029125 -%}
+{%- set fuse_izz = 0.055225 -%}
 
 {# rotors #}
-{%- set rtr_m = 0.003 -%}           {# mass, kg #}
+{%- set rtr_m = 0.005 -%}           {# mass, kg #}
 {%- set rtr_r = 0.08  -%}           {# radius, m #}
 {%- set rtr_h = 0.001 -%}           {# thickness, m #}
 {%- set rtr_ixx = rtr_m/12*(3*rtr_r**2 + rtr_h**2) -%}
 {%- set rtr_iyy = rtr_ixx -%}
 {%- set rtr_izz = rtr_m*rtr_r**2/2 -%}
 {%- set rtr_arm_data_list = [
-  {'x': 0.09,  'y': -0.11,  'dir': 'ccw'},
-  {'x': -0.1, 'y': 0.11, 'dir': 'ccw'},
-  {'x': 0.09,  'y': 0.11, 'dir': 'cw'},
-  {'x': -0.1, 'y': -0.11,  'dir': 'cw'},
+  {'x': 0.091,  'y': -0.108,  'dir': 'ccw'},
+  {'x': -0.097, 'y': 0.108, 'dir': 'ccw'},
+  {'x': 0.091,  'y': 0.108, 'dir': 'cw'},
+  {'x': -0.097, 'y': -0.108,  'dir': 'cw'},
   ]%}
 
 {%- macro cylinder(r, h) -%}
@@ -54,7 +54,6 @@
 {%- macro mesh_colored(uri, color) -%}
 <geometry>
   <mesh>
-    <scale>1 1 1</scale>
     <uri>{{ uri }}</uri>
   </mesh>
 </geometry>
@@ -66,39 +65,16 @@
 </material>
 {%- endmacro -%}
 
-{%- macro surface() -%}
-<surface>
-  <contact>
-    <ode>
-      <min_depth>0.001</min_depth>
-      <max_vel>0</max_vel>
-    </ode>
-  </contact>
-  <friction>
-    <ode/>
-  </friction>
-</surface>
-{%- endmacro -%}
-
-
 <?xml version="1.0" ?>
 <!-- DO NOT EDIT: Generated from px4vision.sdf.jinja -->
-<sdf version="1.5">
+<sdf version="1.7">
 
   <model name="px4vision">
 
-    <pose>0 0 0.2 0 0 0</pose>
-
-    <self_collide>false</self_collide>
-
-    <static>false</static>
+    <!--<pose>0 0 0.2 0 0 0</pose>-->
 
     <link name="base_link">
       {{ inertial(fuse_m, fuse_ixx, fuse_iyy, fuse_izz)|indent(6) }}
-
-      <gravity>true</gravity>
-      <self_collide>false</self_collide>
-      <velocity_decay/>
 
       <visual name="fuselage_visual">
         {{ mesh_colored("model://px4vision/meshes/px4vision.stl", "DarkGrey")|indent(8) }}
@@ -106,7 +82,19 @@
 
       <collision name="fuselage_collision">
         {{ box(fuse_r, fuse_r, fuse_h)|indent(8) }}
-        {{ surface()|indent(8) }}
+        <surface>
+          <contact>
+            <ode>
+              <min_depth>1e-6</min_depth>
+              <max_vel>0.01</max_vel>
+              <kp>1e6</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
       </collision>
 
       <collision name="mast_collision">
@@ -116,49 +104,12 @@
 
     </link>
 
-    <link name='imu_link'>
-      <pose>0 0 0 0 0 0</pose>
-      <inertial>
-        <pose>0 0 0 0 0 0</pose>
-        <mass>0.015</mass>
-        <inertia>
-          <ixx>1e-05</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>1e-05</iyy>
-          <iyz>0</iyz>
-          <izz>1e-05</izz>
-        </inertia>
-      </inertial>
-    </link>
-
-    <joint name='imu_joint' type='revolute'>
-      <child>imu_link</child>
-      <parent>base_link</parent>
-      <axis>
-        <xyz>1 0 0</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0</upper>
-          <effort>0</effort>
-          <velocity>0</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
-      </axis>
-    </joint>
-
-
-
     {%- for n in range(4) -%}
 
       {%- set x = rtr_arm_data_list[n]['x'] %}
       {%- set y = rtr_arm_data_list[n]['y'] %}
       {%- set dir = rtr_arm_data_list[n]['dir'] %}
-      {%- set rtr_pos = np.array([x, y, 0.03]) %}
+      {%- set rtr_pos = np.array([x, y, 0.032]) %}
 
       {%- if dir == 'ccw' %}
         {%- set rtr_dir = "ccw" %}
@@ -171,20 +122,14 @@
     <!--Rotor {{n}} -->
     <link name="rotor_{{n}}">
 
-      <gravity>true</gravity>
-      <self_collide>false</self_collide>
-      <velocity_decay/>
-
       <pose>{{ rtr_pos|join(' ') }} 0 0 0</pose>
       {{ inertial(rtr_m, rtr_ixx, rtr_iyy, rtr_izz)| indent(8) }}
       <visual name="rotor_{{n}}_visual">
-        <pose>0 0 0 0 0 0</pose>
         {{ mesh_colored(prop_uri, "Grey")|indent(8) }}
       </visual>
 
       <collision name="rotor_{{n}}_collision">
         {{ cylinder(rtr_r, rtr_h) | indent(8) }}
-        {{ surface()|indent(8) }}
       </collision>
 
     </link>
@@ -198,10 +143,6 @@
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
         </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
         <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
     </joint>
@@ -226,49 +167,50 @@
 
     {% endfor %}
 
+    <plugin name='rosbag' filename='libgazebo_multirotor_base_plugin.so'>
+      <robotNamespace/>
+      <linkName>base_link</linkName>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+
     <include>
+      <pose>0.09 0 -0.01 0 0 0</pose>
       <uri>model://intel_d435</uri>
-      <pose>0.1 0 0 0 0 0</pose>
     </include>
-    <joint name="depth_camera_joint" type="revolute">
+    <joint name="depth_camera_joint" type="fixed">
       <child>intel_d435::link</child>
       <parent>base_link</parent>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <upper>0</upper>
-          <lower>0</lower>
-        </limit>
-      </axis>
+    </joint>
+
+    <include>
+      <uri>model://gps</uri>
+      <pose>0.065 0 0.15 0 0 0</pose>
+      <name>gps0</name>
+    </include>
+
+    <joint name='gps0_joint' type='fixed'>
+      <child>gps0::link</child>
+      <parent>base_link</parent>
     </joint>
 
     <plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>
       <robotNamespace/>
     </plugin>
 
-    <include>
-      <uri>model://gps</uri>
-      <pose>0.1 0 0 0 0 0</pose>
-      <name>gps0</name>
-    </include>
-    <joint name='gps0_joint' type='fixed'>
-      <child>gps0::link</child>
-      <parent>base_link</parent>
-    </joint>
-
     <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-        <robotNamespace/>
-        <pubRate>100</pubRate>
-        <noiseDensity>0.0004</noiseDensity>
-        <randomWalk>6.4e-06</randomWalk>
-        <biasCorrelationTime>600</biasCorrelationTime>
-        <magTopic>/mag</magTopic>
+      <robotNamespace/>
+      <pubRate>100</pubRate>
+      <noiseDensity>0.0004</noiseDensity>
+      <randomWalk>6.4e-06</randomWalk>
+      <biasCorrelationTime>600</biasCorrelationTime>
+      <magTopic>/mag</magTopic>
     </plugin>
 
     <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
       <robotNamespace/>
       <pubRate>50</pubRate>
       <baroTopic>/baro</baroTopic>
+      <baroDriftPaPerSec>0</baroDriftPaPerSec>
     </plugin>
 
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
@@ -309,7 +251,7 @@
 
     <plugin name='rotors_gazebo_imu_plugin' filename='libgazebo_imu_plugin.so'>
       <robotNamespace/>
-      <linkName>imu_link</linkName>
+      <linkName>base_link</linkName>
       <imuTopic>/imu</imuTopic>
       <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
       <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
