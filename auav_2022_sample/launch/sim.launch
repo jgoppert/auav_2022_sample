@@ -29,7 +29,7 @@
 
     <!--spawn vehicle model in gazebo-->
     <node name="drone_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
-      args="-sdf -file $(find auav_2022_sample)/models/sample_drone/sample_drone.sdf -model drone -x -11 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+      args="-sdf -file $(find auav_2022_sample)/models/px4vision/px4vision.sdf -model drone -x -11 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
 
     <!--spawn vehicle model in gazebo-->
     <!--<node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="log"-->
@@ -74,16 +74,13 @@
       <param name="goal_z_param" value="2" />
       <param name="tree_node_distance_" value="0.5" />
       <rosparam param="pointcloud_topics">[camera/depth/points]</rosparam>
-      <!--<param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" />-->
     </node>
 
     <!-- Launch offboard node -->
-    <node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>
+    <!--<node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>-->
 
     <!-- Launch object tracking node -->
-    <node name="detection_model" pkg="auav_2022_sample" type="color_tracking.py"/>
-
-
+    <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/>
 
   </group>
 

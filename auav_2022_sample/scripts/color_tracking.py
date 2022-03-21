@@ -132,7 +132,7 @@ def image_callback(data):
 
 def start_detection_node():
  
-    rospy.init_node('box_node', anonymous=True)
+    rospy.init_node('color_tracking', anonymous=True)
     rospy.Subscriber("camera/color/image_raw", Image, image_callback, queue_size=1)
     rospy.spin()
 
