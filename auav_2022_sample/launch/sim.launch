@@ -72,9 +72,18 @@
       <param name="goal_x_param" value="5" />
       <param name="goal_y_param" value="0"/>
       <param name="goal_z_param" value="2" />
+      <param name="tree_node_distance_" value="0.5" />
       <rosparam param="pointcloud_topics">[camera/depth/points]</rosparam>
       <!--<param name="world_name" value="$(find avoidance)/sim/worlds/$(arg world_file_name).yaml" />-->
     </node>
+
+    <!-- Launch offboard node -->
+    <node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>
+
+    <!-- Launch object tracking node -->
+    <node name="detection_model" pkg="auav_2022_sample" type="color_tracking.py"/>
+
+
 
   </group>
 

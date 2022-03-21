@@ -43,8 +43,8 @@
           <updateRate>20</updateRate>
           <pointCloudCutoff>0.2</pointCloudCutoff>
           <pointCloudCutoffMax>10</pointCloudCutoffMax>
-          <imageTopicName>rgb/image_raw</imageTopicName>
-          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <imageTopicName>color/image_raw</imageTopicName>
+          <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
           <depthImageTopicName>depth/image_raw</depthImageTopicName>
           <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
           <pointCloudTopicName>depth/points</pointCloudTopicName>
