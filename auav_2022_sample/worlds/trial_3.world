@@ -15,30 +15,50 @@
     <include>
       <uri>model://sun</uri>
     </include>
-<!-- Roads -->
-   <include>
-      <uri>model://asphalt_road</uri>      
-      <name>road1</name>
-      <pose>0 0.5 0 0 -0 1.57</pose>
-    </include>
 
-    <include>
-      <uri>model://asphalt_road</uri>      
-      <name>road2</name>
-      <pose>3.5 5.43 0 0 -0 0</pose>
-    </include>
+    <!-- Roads -->
+    <road name="road1">
+      <width>2</width>
+      <point>-13 0.5 0.01</point>
+      <point>10 0.5 0.01</point>
+      <point>10 16.5 0.01</point>
+      <point>-12 16.5 0.01</point>
+      <point>-12 0.5 0.01</point>
+      <material>
+        <script>
+          <uri>model://asphalt_road/materials/scripts</uri>
+          <uri>model://asphalt_road/materials/textures</uri>
+          <name>vrc/asphalt_road</name>
+        </script>
+      </material>
+    </road>
 
-    <include>
-      <uri>model://asphalt_road</uri>      
-      <name>road3</name>
-      <pose>0 10 0 0 -0 1.57</pose>
-    </include>
+    <road name="road2">
+      <width>2</width>
+      <point>-3.5 0.5 0.01</point>
+      <point>-3.5 16.5 0.01</point>
+      <material>
+        <script>
+          <uri>model://asphalt_road/materials/scripts</uri>
+          <uri>model://asphalt_road/materials/textures</uri>
+          <name>vrc/asphalt_road</name>
+        </script>
+      </material>
+    </road>
 
-    <include>
-      <uri>model://asphalt_road</uri>      
-      <name>road4</name>
-      <pose>-3.5 5.43 0 0 -0 0</pose>
-    </include>
+    <road name="road3">
+      <width>2</width>
+      <point>-12 10 0.01</point>
+      <point>10  10 0.01</point>
+      <material>
+        <script>
+          <uri>model://asphalt_road/materials/scripts</uri>
+          <uri>model://asphalt_road/materials/textures</uri>
+          <name>vrc/asphalt_road</name>
+        </script>
+      </material>
+    </road>
+
 <!-- Buildings Block 1 -->
 
     <include>

@@ -28,9 +28,9 @@
         </geometry>
         <material>
           <script>
-            <uri>model://asphalt_plane/materials/scripts</uri>
-            <uri>model://asphalt_plane/materials/textures</uri>
-            <name>vrc/asphalt</name>
+            <uri>model://asphalt_road/materials/scripts</uri>
+            <uri>model://asphalt_road/materials/textures</uri>
+            <name>vrc/asphalt_road</name>
           </script>
           <shader type='vertex'>
             <normal_map>__default__</normal_map>
