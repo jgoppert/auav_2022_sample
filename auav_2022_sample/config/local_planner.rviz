@@ -7,8 +7,8 @@ Panels:
         - /Global Options1
         - /Status1
         - /MarkerArray1
-        - /MarkerArray1/Status1
         - /MarkerArray1/Namespaces1
+        - /Pose1
       Splitter Ratio: 0.5
     Tree Height: 396
   - Class: rviz/Selection
@@ -29,7 +29,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: Color Tracking
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -103,6 +103,22 @@ Visualization Manager:
         map: true
       Queue Size: 100
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Queue Size: 10
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic: /drone/mavros/local_position/pose
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -131,7 +147,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 17.82135009765625
+      Distance: 15.331853866577148
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -139,17 +155,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.4806509017944336
-        Y: -3.7234292030334473
-        Z: 3.7033917903900146
+        X: -1.7257812023162842
+        Y: -3.32981276512146
+        Z: 5.552032947540283
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9547973275184631
+      Pitch: 0.6147977113723755
       Target Frame: base_link
-      Yaw: 1.4140976667404175
+      Yaw: 4.104077339172363
     Saved:
       - Class: rviz/Orbit
         Distance: 10

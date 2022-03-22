@@ -4,3 +4,6 @@
 [submodule "avoidance"]
 	path = avoidance
 	url = https://github.com/jgoppert/PX4-Avoidance.git
+[submodule "path_planning"]
+	path = path_planning
+	url = https://github.com/jgoppert/path_planning

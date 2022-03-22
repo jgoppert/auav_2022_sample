@@ -17,7 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -183,6 +182,10 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/auav_2022_sample_node.cpp)
 add_executable(offboard_node src/offboard_node.cpp)
 target_link_libraries(offboard_node ${catkin_LIBRARIES})
+
+add_executable(rrt_node src/rrt_node.cpp)
+target_link_libraries(rrt_node ${catkin_LIBRARIES})
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
