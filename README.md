@@ -40,3 +40,9 @@ each drone with the command:
 ```bash
 roslaunch auav_2022_sample live.launch
 ```
+
+## Path Planning
+
+Two examples of path planning libraries are included that use the depth camera information:
+* PX4 avoidance: Uses VFH3D+ approach, simple approach, not very robust
+* path planning: Uses octomap and OMPL library for (RRT), could be improved to use Quadrotor dynamics
