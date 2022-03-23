@@ -29,11 +29,11 @@
 
     <!--spawn vehicle model in gazebo-->
     <node name="drone_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
-      args="-sdf -file $(find auav_2022_sample)/models/px4vision/px4vision.sdf -model drone -x -11 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
+      args="-sdf -file $(find auav_2022_sample)/models/px4vision/px4vision.sdf -model drone -x -6 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
 
     <!--spawn vehicle model in gazebo-->
-    <!--<node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="log"-->
-      <!--args="-sdf -file $(find auav_2022_sample)/models/axial_scx10/model.sdf -model rover -x 2 -y 0 -z 0 -R 0 -P 0 -Y 0"/>-->
+    <node name="rover_spawn" pkg="gazebo_ros" type="spawn_model" output="log"
+      args="-sdf -file $(find auav_2022_sample)/models/freenove_4wd/freenove_4wd.sdf -model rover -x -4 -y 0 -z 0 -R 0 -P 0 -Y 0"/>
 
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
     <!--<node pkg="auav_2022_sample" type="drive_rover.py" name="drive_rover" args="" output="screen" launch-prefix="bash -c 'sleep 15; $0 $@' "/>-->

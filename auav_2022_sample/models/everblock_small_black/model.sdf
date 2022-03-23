@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="everblock_small_black">
+    <static>true</static>
+    <link name="block">
+      <pose>0 0 0.6096 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <scale>0.3048 0.1524 1.2192</scale>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://everblock_small_black/meshes/block.dae</uri>
+            <scale>0.762 0.3048 1.2192</scale>
+          </mesh>
+	  	</geometry>
+        <material>
+          <script>
+            <uri>model://everblock_small_black/materials/scripts</uri>
+            <uri>model://everblock_small_black/materials/textures</uri>
+            <name>BlockSmallBlack</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

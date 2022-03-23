@@ -67,6 +67,7 @@ function(glob_generate target file_glob)
 endfunction()
 
 glob_generate(models_gen ${CMAKE_CURRENT_SOURCE_DIR}/models/*.jinja)
+glob_generate(worlds_gen ${CMAKE_CURRENT_SOURCE_DIR}/worlds/*.jinja)
 
 ################################################
 ## Declare ROS messages, services and actions ##

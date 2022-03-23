@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="hangar_floor">
+    <static>true</static>
+    <link name='ground'>
+      <pose>0 0 0 0 0 0</pose>
+      <static>true</static>
+      <visual name='visual'>
+        <geometry>
+          <plane>
+            <size>20 20</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://hangar_floor/materials/scripts</uri>
+            <uri>model://hangar_floor/materials/textures</uri>
+            <name>hangar_floor</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='collision'>
+        <geometry>
+          <plane>
+            <size>20 20</size>
+          </plane>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

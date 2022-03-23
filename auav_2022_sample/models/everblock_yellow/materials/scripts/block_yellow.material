@@ -1,0 +1,21 @@
+material BlockYellow
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      ambient 1.0 1.0 0.0
+      diffuse 0.8 0.8 0.0
+
+      texture_unit
+      {
+        texture block.png
+        filtering anistropic
+        max_anisotropy 16
+        scale 0.5 0.5
+      }
+    }
+  }
+}
+

@@ -1,244 +1,38 @@
 <?xml version="1.0"?> 
 <sdf version="1.7">
   <world name="trial_1_world">
+
     <gui>
       <camera name="user_camera">
-        <pose>0 -11.0 24.5 0 1.0 1.5708</pose>
+        <pose>0 -12 14 0 0.85 1.57</pose>
       </camera>
     </gui>
 
-    <!-- Ground Plane -->
-    <include>
-      <uri>model://ground_plane</uri>
-    </include>
+    <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+    </scene>
 
     <include>
       <uri>model://sun</uri>
     </include>
 
-    <!-- Roads -->
-    <road name="road1">
-      <width>2</width>
-      <point>-13 0.5 0.01</point>
-      <point>10 0.5 0.01</point>
-      <point>10 16.5 0.01</point>
-      <point>-12 16.5 0.01</point>
-      <point>-12 0.5 0.01</point>
-      <material>
-        <script>
-          <uri>model://asphalt_road/materials/scripts</uri>
-          <uri>model://asphalt_road/materials/textures</uri>
-          <name>vrc/asphalt_road</name>
-        </script>
-      </material>
-    </road>
-
-    <road name="road2">
-      <width>2</width>
-      <point>-3.5 0.5 0.01</point>
-      <point>-3.5 16.5 0.01</point>
-      <material>
-        <script>
-          <uri>model://asphalt_road/materials/scripts</uri>
-          <uri>model://asphalt_road/materials/textures</uri>
-          <name>vrc/asphalt_road</name>
-        </script>
-      </material>
-    </road>
-
-    <road name="road3">
-      <width>2</width>
-      <point>-12 10 0.01</point>
-      <point>10  10 0.01</point>
-      <material>
-        <script>
-          <uri>model://asphalt_road/materials/scripts</uri>
-          <uri>model://asphalt_road/materials/textures</uri>
-          <name>vrc/asphalt_road</name>
-        </script>
-      </material>
-    </road>
-
-    <!-- Buildings Block 1 -->
     <include>
-      <uri>model://office_0</uri>      
-      <name>building1</name>
-      <pose>1.85 2.34 0.0 0 0 0</pose>
+      <uri>model://hangar_floor</uri>
     </include>
 
     <include>
-      <uri>model://office_1</uri>      
-      <name>building2</name>
-      <pose>1.85 5.29 0.0 0 0 0</pose>
+      <uri>model://sample_course_1</uri>
     </include>
 
     <include>
-      <uri>model://office_0</uri>      
-      <name>building3</name>
-      <pose>1.85 8.29 0.0 0 0 0</pose>
+      <pose>-9 1 0 0 0 1.57</pose>
+      <uri>model://person_standing</uri>
     </include>
 
-    <include>
-      <uri>model://office_2</uri>      
-      <name>building4</name>
-      <pose>0 7.14 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_1</uri>      
-      <name>building5</name>
-      <pose>-1.85 7.14 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_3</uri>      
-      <name>building6</name>
-      <pose>-0.92 3.08 0.0 0 0 0</pose>
-    </include>
-
-    <!-- Buildings Block 2 -->
-    <include>
-      <uri>model://office_1</uri>      
-      <name>building21</name>
-      <pose>1.87 -2.35 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_0</uri>      
-      <name>building22</name>
-      <pose>-5.21 8.29 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_2</uri>      
-      <name>building23</name>
-      <pose>-6.90 7.14 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_3</uri>      
-      <name>building24</name>
-      <pose>-8.50 3.08 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_2</uri>      
-      <name>building25</name>
-      <pose>-5.23 3.808 0.0 0 0 0</pose>
-    </include>
-
-    <!-- Buildings Block 3 -->
-    <include>
-      <uri>model://office_0</uri>      
-      <name>building31</name>
-      <pose>1.85 11.86 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_2</uri>      
-      <name>building32</name>
-      <pose>0 13.22 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_1</uri>      
-      <name>building33</name>
-      <pose>-1.85 13.22 0.0 0 0 0</pose>
-    </include>
-
-    <!-- Buildings Block 4 -->
-    <include>
-      <uri>model://office_0</uri>      
-      <name>building41</name>
-      <pose>5.16 2.34 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_1</uri>      
-      <name>building42</name>
-      <pose>5.16 5.29 0.0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://office_0</uri>      
-      <name>building43</name>
-      <pose>5.16 8.29 0.0 0 0 0</pose>
-    </include>
-
-    <actor name='pickup'>
-      <skin>
-        <filename>model://pickup/meshes/pickup.dae</filename>
-      </skin>
-      <link name='link'>
-        <visual name='visual'>
-          <pose>0 0 0 0 0 -1.5708</pose>
-          <geometry>
-            <mesh>
-              <uri>model://pickup/meshes/pickup.dae</uri>
-              <scale>0.2 0.2 0.2</scale>
-            </mesh>
-          </geometry>
-        </visual>
-        <collision name='collision'>
-          <pose>0 0 0 0 0 -1.5708</pose>
-          <geometry>
-            <mesh>
-              <uri>model://pickup/meshes/pickup.dae</uri>
-              <scale>0.2 0.2 0.2</scale>
-            </mesh>
-          </geometry>
-        </collision>
-      </link>
-      <link name='ball'>
-        <static>1</static>
-        <pose>-0.358248 0.002769 0.300093 0 -0 0</pose>
-        <visual name='visual'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Red</name>
-            </script>
-          </material>
-        </visual>
-        <collision name='collision'>
-          <geometry>
-            <sphere>
-              <radius>0.122785</radius>
-            </sphere>
-          </geometry>
-        </collision>
-      </link>
-      <script>
-        <loop>true</loop>
-        <!--Setting delay start causes crash-->
-        <delay_start>0</delay_start>
-        <auto_start>true</auto_start>
-        <trajectory id="0" type="square">
-          <waypoint>
-            <time>0.0</time>
-            <pose>-8 0 0.05 0 0 0</pose>
-          </waypoint>
-          <waypoint>
-            <time>20.0</time>
-            <pose>-8 0 0.05 0 0 0</pose>
-          </waypoint>
-          <waypoint>
-            <time>40.0</time>
-            <pose>8 0 0.05 0 0 0</pose>
-          </waypoint>
-          <waypoint>
-            <time>60.0</time>
-            <pose>0 0 0.05 0 0 0</pose>
-          </waypoint>
-        </trajectory>
-      </script>
-    </actor>
-  
   </world>
 </sdf>
 
