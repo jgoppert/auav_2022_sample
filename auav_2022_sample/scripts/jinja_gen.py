@@ -41,7 +41,7 @@ if __name__ == "__main__":
     parser.add_argument('--generate_ros_models', default=False, dest='generate_ros_models', type=str2bool,
                     help="required if generating the agent for usage with ROS nodes, by default false")
     args = parser.parse_args()
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(args.env_dir))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(args.env_dir), extensions=['jinja2.ext.do'])
     template = env.get_template(os.path.relpath(args.filename, args.env_dir))
 
     # get ROS version, if generate_ros_models is true.
@@ -80,11 +80,15 @@ if __name__ == "__main__":
         if args.output_file:
             filename_out = args.output_file
         else:
-            if not args.filename.endswith('.sdf.jinja'):
+            if args.filename.endswith('.sdf.jinja'):
+                filename_out = args.filename.replace('.sdf.jinja', '.sdf')
+            elif args.filename.endswith('.world.jinja'):
+                filename_out = args.filename.replace('.world.jinja', '.world')
+            else:
                 raise Exception("ERROR: Output file can only be determined automatically for " + \
-                                "input files with the .sdf.jinja extension")
-            filename_out = args.filename.replace('.sdf.jinja', '.sdf')
+                                "input files with the .sdf.jinja  or .world.jinja extension")
             assert filename_out != args.filename, "Not allowed to overwrite template"
+
 
         # Overwrite protection mechanism: after generation, the file will be copied to a "last_generated" file.
         # In the next run, we can check whether the target file is still unmodified.

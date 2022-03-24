@@ -44,8 +44,7 @@
 <inertial>
   <mass>{{m}}</mass>
   <inertia>
-    <ixx>{{ixx}}</ixx>
-    <iyy>{{iyy}}</iyy>
+    <ixx>{{ixx}}</ixx> <iyy>{{iyy}}</iyy>
     <izz>{{izz}}</izz>
   </inertia>
 </inertial>
@@ -65,205 +64,221 @@
 </material>
 {%- endmacro -%}
 
+{%- macro px4vision(name, pose, mav_id) -%}
+<model name="{{name}}">
+  <pose>{{pose|join(' ') }}</pose>
+
+  <link name="base_link">
+    {{ inertial(fuse_m, fuse_ixx, fuse_iyy, fuse_izz)|indent(6) }}
+
+    <visual name="fuselage_visual">
+      {{ mesh_colored("model://px4vision/meshes/px4vision.stl", "DarkGrey")|indent(8) }}
+    </visual>
+
+    <collision name="fuselage_collision">
+      {{ box(fuse_r, fuse_r, fuse_h)|indent(8) }}
+      <surface>
+        <contact>
+          <ode>
+            <min_depth>1e-6</min_depth>
+            <max_vel>0.01</max_vel>
+            <kp>1e6</kp>
+            <kd>1</kd>
+          </ode>
+        </contact>
+        <friction>
+          <ode/>
+        </friction>
+      </surface>
+    </collision>
+
+    <collision name="mast_collision">
+      <pose>0.06 0 0.11 0 0 0</pose>
+      {{ cylinder(0.03, 0.1) | indent(8) }}
+    </collision>
+
+    <sensor name="depth_camera" type="depth">
+      <pose>0.09 0 -0.01 0 0 0</pose>
+      <update_rate>15</update_rate>
+      <visulize>1</visulize>
+      <camera>
+        <horizontal_fov>1.02974</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>11</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="camera_controller">
+        <robotNamespace>{{name}}</robotNamespace>
+        <cameraName>camera</cameraName>
+        <alwaysOn>true</alwaysOn>
+        <pointCloudCutoff>0.2</pointCloudCutoff>
+        <pointCloudCutoffMax>10</pointCloudCutoffMax>
+        <imageTopicName>color/image_raw</imageTopicName>
+        <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <frameName>camera_link</frameName>
+        <distortion_k1>0.0</distortion_k1>
+        <distortion_k2>0.0</distortion_k2>
+        <distortion_k3>0.0</distortion_k3>
+        <distortion_t1>0.0</distortion_t1>
+        <distortion_t2>0.0</distortion_t2>
+      </plugin>
+    </sensor>
+
+  </link>
+
+  {%- for n in range(4) -%}
+
+    {%- set x = rtr_arm_data_list[n]['x'] %}
+    {%- set y = rtr_arm_data_list[n]['y'] %}
+    {%- set dir = rtr_arm_data_list[n]['dir'] %}
+    {%- set rtr_pos = [x, y, 0.032] %}
+
+    {%- if dir == 'ccw' %}
+      {%- set rtr_dir = "ccw" %}
+    {%- elif dir== 'cw' %}
+      {%- set rtr_dir = "cw" %}
+    {%- endif %}
+
+    {%- set prop_uri = "model://px4vision/meshes/prop_{:s}.stl".format(rtr_dir) %}
+
+  <!--Rotor {{n}} -->
+  <link name="rotor_{{n}}">
+
+    <pose>{{ rtr_pos|join(' ') }} 0 0 0</pose>
+    {{ inertial(rtr_m, rtr_ixx, rtr_iyy, rtr_izz)| indent(8) }}
+    <visual name="rotor_{{n}}_visual">
+      {{ mesh_colored(prop_uri, "Grey")|indent(8) }}
+    </visual>
+
+    <collision name="rotor_{{n}}_collision">
+      {{ cylinder(rtr_r, rtr_h) | indent(8) }}
+    </collision>
+
+  </link>
+
+  <joint name="rotor_{{n}}_joint" type="revolute">
+    <parent>base_link</parent>
+    <child>rotor_{{n}}</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <limit>
+        <lower>-1e+16</lower>
+        <upper>1e+16</upper>
+      </limit>
+      <use_parent_model_frame>1</use_parent_model_frame>
+    </axis>
+  </joint>
+
+  <plugin name='rotor_{{n}}_motor_model' filename='libgazebo_motor_model.so'>
+    <robotNamespace/>
+    <jointName>rotor_{{n}}_joint</jointName>
+    <linkName>rotor_{{n}}</linkName>
+    <turningDirection>{{rtr_dir}}</turningDirection>
+    <timeConstantUp>0.0125</timeConstantUp>
+    <timeConstantDown>0.025</timeConstantDown>
+    <maxRotVelocity>1100</maxRotVelocity>
+    <motorConstant>5.84e-06</motorConstant>
+    <momentConstant>0.06</momentConstant>
+    <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+    <motorNumber>{{n}}</motorNumber>
+    <rotorDragCoefficient>0.000175</rotorDragCoefficient>
+    <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+    <motorSpeedPubTopic>/motor_speed/{{n}}</motorSpeedPubTopic>
+    <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+  </plugin>
+
+  {% endfor %}
+
+  <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
+    <robotNamespace>{{name}}</robotNamespace>
+    <bodyName>base_link</bodyName>
+    <topicName>qualisys/{{name}}</topicName>
+    <frameName>map</frameName>
+    <xyzOffset>0 0 0</xyzOffset>
+    <rpyOffset>0 0 0</rpyOffset>
+  </plugin>
+
+  <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
+    <robotNamespace/>
+    <pubRate>100</pubRate>
+    <noiseDensity>0.0004</noiseDensity>
+    <randomWalk>6.4e-06</randomWalk>
+    <biasCorrelationTime>600</biasCorrelationTime>
+    <magTopic>/mag</magTopic>
+  </plugin>
+
+  <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
+    <robotNamespace/>
+    <pubRate>50</pubRate>
+    <baroTopic>/baro</baroTopic>
+    <baroDriftPaPerSec>0</baroDriftPaPerSec>
+  </plugin>
+
+  <plugin name='rotors_gazebo_imu_plugin' filename='libgazebo_imu_plugin.so'>
+    <robotNamespace/>
+    <linkName>base_link</linkName>
+    <imuTopic>/imu</imuTopic>
+    <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
+    <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
+    <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
+    <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
+    <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
+    <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
+    <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
+    <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
+  </plugin>
+
+  <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
+    <robotNamespace/>
+    <imuSubTopic>/imu</imuSubTopic>
+    <magSubTopic>/mag</magSubTopic>
+    <baroSubTopic>/baro</baroSubTopic>
+    <mavlink_addr>INADDR_ANY</mavlink_addr>
+    <mavlink_tcp_port>{{ mavlink_tcp_port + mav_id }}</mavlink_tcp_port>
+    <mavlink_udp_port>{{ mavlink_udp_port + mav_id }}</mavlink_udp_port>
+    <serialEnabled>{{ serial_enabled }}</serialEnabled>
+    <serialDevice>{{ serial_device }}</serialDevice>
+    <baudRate>{{ serial_baudrate }}</baudRate>
+    <qgc_addr>INADDR_ANY</qgc_addr>
+    <qgc_udp_port>14550</qgc_udp_port>
+    <sdk_addr>INADDR_ANY</sdk_addr>
+    <sdk_udp_port>14540</sdk_udp_port>
+    <hil_mode>{{ hil_mode }}</hil_mode>
+    <hil_state_level>0</hil_state_level>
+    <send_vision_estimation>0</send_vision_estimation>
+    <send_odometry>1</send_odometry>
+    <enable_lockstep>1</enable_lockstep>
+    <use_tcp>1</use_tcp>
+    <motorSpeedCommandPubTopic>/gazebo/command/motor_speed</motorSpeedCommandPubTopic>
+    <control_channels>
+      {%- for n in range(4) -%}
+      <channel name='rotor{{ n + 1 }}'>
+        <input_index>{{ n }}</input_index>
+        <input_offset>0</input_offset>
+        <input_scaling>1000</input_scaling>
+        <zero_position_disarmed>0</zero_position_disarmed>
+        <zero_position_armed>100</zero_position_armed>
+        <joint_control_type>velocity</joint_control_type>
+      </channel>
+      {% endfor %}
+    </control_channels>
+  </plugin>
+
+</model>
+{%- endmacro -%}
+
 <?xml version="1.0" ?>
 <!-- DO NOT EDIT: Generated from px4vision.sdf.jinja -->
 <sdf version="1.7">
-
-  <model name="px4vision">
-
-    <link name="base_link">
-      {{ inertial(fuse_m, fuse_ixx, fuse_iyy, fuse_izz)|indent(6) }}
-
-      <visual name="fuselage_visual">
-        {{ mesh_colored("model://px4vision/meshes/px4vision.stl", "DarkGrey")|indent(8) }}
-      </visual>
-
-      <collision name="fuselage_collision">
-        {{ box(fuse_r, fuse_r, fuse_h)|indent(8) }}
-        <surface>
-          <contact>
-            <ode>
-              <min_depth>1e-6</min_depth>
-              <max_vel>0.01</max_vel>
-              <kp>1e6</kp>
-              <kd>1</kd>
-            </ode>
-          </contact>
-          <friction>
-            <ode/>
-          </friction>
-        </surface>
-      </collision>
-
-      <collision name="mast_collision">
-        <pose>0.06 0 0.11 0 0 0</pose>
-        {{ cylinder(0.03, 0.1) | indent(8) }}
-      </collision>
-
-    </link>
-
-    {%- for n in range(4) -%}
-
-      {%- set x = rtr_arm_data_list[n]['x'] %}
-      {%- set y = rtr_arm_data_list[n]['y'] %}
-      {%- set dir = rtr_arm_data_list[n]['dir'] %}
-      {%- set rtr_pos = np.array([x, y, 0.032]) %}
-
-      {%- if dir == 'ccw' %}
-        {%- set rtr_dir = "ccw" %}
-      {%- elif dir== 'cw' %}
-        {%- set rtr_dir = "cw" %}
-      {%- endif %}
-
-      {%- set prop_uri = "model://px4vision/meshes/prop_{:s}.stl".format(rtr_dir) %}
-
-    <!--Rotor {{n}} -->
-    <link name="rotor_{{n}}">
-
-      <pose>{{ rtr_pos|join(' ') }} 0 0 0</pose>
-      {{ inertial(rtr_m, rtr_ixx, rtr_iyy, rtr_izz)| indent(8) }}
-      <visual name="rotor_{{n}}_visual">
-        {{ mesh_colored(prop_uri, "Grey")|indent(8) }}
-      </visual>
-
-      <collision name="rotor_{{n}}_collision">
-        {{ cylinder(rtr_r, rtr_h) | indent(8) }}
-      </collision>
-
-    </link>
-
-    <joint name="rotor_{{n}}_joint" type="revolute">
-      <parent>base_link</parent>
-      <child>rotor_{{n}}</child>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <lower>-1e+16</lower>
-          <upper>1e+16</upper>
-        </limit>
-        <use_parent_model_frame>1</use_parent_model_frame>
-      </axis>
-    </joint>
-
-    <plugin name='rotor_{{n}}_motor_model' filename='libgazebo_motor_model.so'>
-      <robotNamespace></robotNamespace>
-      <jointName>rotor_{{n}}_joint</jointName>
-      <linkName>rotor_{{n}}</linkName>
-      <turningDirection>{{rtr_dir}}</turningDirection>
-      <timeConstantUp>0.0125</timeConstantUp>
-      <timeConstantDown>0.025</timeConstantDown>
-      <maxRotVelocity>1100</maxRotVelocity>
-      <motorConstant>5.84e-06</motorConstant>
-      <momentConstant>0.06</momentConstant>
-      <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
-      <motorNumber>{{n}}</motorNumber>
-      <rotorDragCoefficient>0.000175</rotorDragCoefficient>
-      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
-      <motorSpeedPubTopic>/motor_speed/{{n}}</motorSpeedPubTopic>
-      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
-    </plugin>
-
-    {% endfor %}
-
-    <plugin name='rosbag' filename='libgazebo_multirotor_base_plugin.so'>
-      <robotNamespace/>
-      <linkName>base_link</linkName>
-      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
-    </plugin>
-
-    <include>
-      <pose>0.09 0 -0.01 0 0.5236 0</pose>
-      <uri>model://intel_d435</uri>
-    </include>
-    <joint name="depth_camera_joint" type="fixed">
-      <child>intel_d435::link</child>
-      <parent>base_link</parent>
-    </joint>
-
-    <include>
-      <uri>model://gps</uri>
-      <pose>0.065 0 0.15 0 0 0</pose>
-      <name>gps0</name>
-    </include>
-
-    <joint name='gps0_joint' type='fixed'>
-      <child>gps0::link</child>
-      <parent>base_link</parent>
-    </joint>
-
-    <plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>
-      <robotNamespace/>
-    </plugin>
-
-    <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-      <robotNamespace/>
-      <pubRate>100</pubRate>
-      <noiseDensity>0.0004</noiseDensity>
-      <randomWalk>6.4e-06</randomWalk>
-      <biasCorrelationTime>600</biasCorrelationTime>
-      <magTopic>/mag</magTopic>
-    </plugin>
-
-    <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
-      <robotNamespace/>
-      <pubRate>50</pubRate>
-      <baroTopic>/baro</baroTopic>
-      <baroDriftPaPerSec>0</baroDriftPaPerSec>
-    </plugin>
-
-    <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
-      <robotNamespace/>
-      <imuSubTopic>/imu</imuSubTopic>
-      <magSubTopic>/mag</magSubTopic>
-      <baroSubTopic>/baro</baroSubTopic>
-      <mavlink_addr>INADDR_ANY</mavlink_addr>
-      <mavlink_tcp_port>{{ mavlink_tcp_port }}</mavlink_tcp_port>
-      <mavlink_udp_port>{{ mavlink_udp_port }}</mavlink_udp_port>
-      <serialEnabled>{{ serial_enabled }}</serialEnabled>
-      <serialDevice>{{ serial_device }}</serialDevice>
-      <baudRate>{{ serial_baudrate }}</baudRate>
-      <qgc_addr>INADDR_ANY</qgc_addr>
-      <qgc_udp_port>14550</qgc_udp_port>
-      <sdk_addr>INADDR_ANY</sdk_addr>
-      <sdk_udp_port>14540</sdk_udp_port>
-      <hil_mode>{{ hil_mode }}</hil_mode>
-      <hil_state_level>0</hil_state_level>
-      <send_vision_estimation>0</send_vision_estimation>
-      <send_odometry>1</send_odometry>
-      <enable_lockstep>1</enable_lockstep>
-      <use_tcp>1</use_tcp>
-      <motorSpeedCommandPubTopic>/gazebo/command/motor_speed</motorSpeedCommandPubTopic>
-      <control_channels>
-        {%- for n in range(4) -%}
-        <channel name='rotor{{ n + 1 }}'>
-          <input_index>{{ n }}</input_index>
-          <input_offset>0</input_offset>
-          <input_scaling>1000</input_scaling>
-          <zero_position_disarmed>0</zero_position_disarmed>
-          <zero_position_armed>100</zero_position_armed>
-          <joint_control_type>velocity</joint_control_type>
-        </channel>
-        {% endfor %}
-      </control_channels>
-    </plugin>
-
-    <plugin name='rotors_gazebo_imu_plugin' filename='libgazebo_imu_plugin.so'>
-      <robotNamespace/>
-      <linkName>base_link</linkName>
-      <imuTopic>/imu</imuTopic>
-      <gyroscopeNoiseDensity>0.00018665</gyroscopeNoiseDensity>
-      <gyroscopeRandomWalk>3.8785e-05</gyroscopeRandomWalk>
-      <gyroscopeBiasCorrelationTime>1000.0</gyroscopeBiasCorrelationTime>
-      <gyroscopeTurnOnBiasSigma>0.0087</gyroscopeTurnOnBiasSigma>
-      <accelerometerNoiseDensity>0.00186</accelerometerNoiseDensity>
-      <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
-      <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
-      <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
-    </plugin>
-
-  </model>
-
+{{ px4vision(name="px4vision", pose=[0, 0, 0, 0, 0, 0], mav_id=0) }}
 </sdf>
-
-
 <!-- vim: set et ft=xml fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

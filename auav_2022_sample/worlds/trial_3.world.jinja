@@ -1,0 +1,45 @@
+{%- from 'models/freenove_4wd/freenove_4wd.sdf.jinja' import freenove_4wd with context -%}
+{%- from 'models/px4vision/px4vision.sdf.jinja' import px4vision with context -%}
+
+<?xml version="1.0"?> 
+<sdf version="1.7">
+  <world name="trial_1_world">
+
+    <gui>
+      <camera name="user_camera">
+        <pose>0 -15 4 0 0.3 1.57</pose>
+      </camera>
+    </gui>
+
+    <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+    </scene>
+
+    {{ freenove_4wd(name='rover', pose=[0, -6, 0, 0, 0, 1.57], with_ball=False)|indent(4) }}
+    {{ px4vision(name='drone', pose=[0, -8, 0, 0, 0, 1.57], mav_id=0)|indent(4) }}
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <uri>model://hangar_floor</uri>
+    </include>
+
+    <include>
+      <uri>model://sample_course_1</uri>
+    </include>
+
+    <include>
+      <pose>-3 -9 0 0 0 2.0</pose>
+      <uri>model://person_standing</uri>
+    </include>
+
+  </world>
+</sdf>
+
+<!-- vim: set et ft=xml fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

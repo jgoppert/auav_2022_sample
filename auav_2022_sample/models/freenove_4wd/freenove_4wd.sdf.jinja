@@ -51,120 +51,137 @@
 </inertial>
 {% endmacro -%}
 
+{%- macro freenove_4wd(name, pose, with_ball) -%}
+<model name='{{ name }}'>
+  <pose>{{pose|join(' ') }}</pose>
+
+  <link name='chassis'>
+    {{ inertial(0.2, 0.01, 0.01, 0.01)|indent(6) }}
+    {{ box('chassis', 'DarkGrey', 0, 0, 0, 0.2, 0.1, 0.03)|indent(6) }}
+    {{ box('computer', 'Green', -0.05, 0, 0.03, 0.1, 0.07, 0.01)|indent(6) }}
+  </link>
+
+  {%- for data in wheel_data_list %}
+  <link name="{{data.name}}">
+    <pose>{{data.x}} {{data.y}} {{data.z}} -1.5707 0 0</pose>
+    {{ inertial(0.005, 0.0001, 0.0001, 0.0001)|indent(6) }}
+    <collision name="collision">
+      <geometry>
+        <cylinder>
+          <radius>{{wheel_diameter/2}}</radius>
+          <length>{{wheel_thickness}}</length>
+        </cylinder>
+      </geometry>
+    </collision>
+
+    <visual name="tire">
+      <geometry>
+        <cylinder>
+          <radius>{{wheel_diameter/2}}</radius>
+          <length>{{wheel_thickness}}</length>
+        </cylinder>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/DarkGrey</name>
+        </script>
+      </material>
+    </visual>
+
+    <visual name="wheel">
+      <geometry>
+        <cylinder>
+          <radius>{{wheel_diameter/2*0.95}}</radius>
+          <length>0.022</length>
+        </cylinder>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Yellow</name>
+        </script>
+      </material>
+    </visual>
+
+    <visual name="wheel_line">
+      <geometry>
+        <box>
+          <size>0.053 0.01 0.024</size>
+        </box>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/DarkGrey</name>
+        </script>
+      </material>
+    </visual>
+
+    <visual name="wheel_line2">
+      <geometry>
+        <box>
+          <size>0.01 0.053 0.024</size>
+        </box>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/DarkGrey</name>
+        </script>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint type="revolute" name="{{data.name}}_joint">
+    <child>{{data.name}}</child>
+    <parent>chassis</parent>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <dynamics>
+        <friction>0.01</friction>
+        <damping>0.01</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  {% endfor %}
+
+  {% if with_ball %}
+  <include>
+    <uri>model://red_ball</uri>
+  </include>
+
+  <joint name="red_ball_joint" type="fixed">
+    <pose>-0.04 0 0.02 0 0 0</pose>
+    <child>red_ball::link</child>
+    <parent>chassis</parent>
+  </joint>
+  {% endif %}
+
+  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+    <robotNamespace>{{name}}</robotNamespace>
+    <updateRate>100.0</updateRate>
+    <leftFrontJoint>front_left_joint</leftFrontJoint>
+    <rightFrontJoint>front_right_joint</rightFrontJoint>
+    <leftRearJoint>rear_left_joint</leftRearJoint>
+    <rightRearJoint>rear_right_joint</rightRearJoint>
+    <wheelSeparation>{{wheel_separation}}</wheelSeparation>
+    <wheelDiameter>{{wheel_diameter}}</wheelDiameter>
+    <robotBaseFrame>rover_ground_truth</robotBaseFrame>
+    <torque>0.3</torque>
+    <broadcastTF>true</broadcastTF>
+    <commandTopic>cmd_vel</commandTopic>
+    <odometryTopic>rover_odom</odometryTopic>
+    <odometryFrame>map</odometryFrame>
+    <covariance_x>0.0001</covariance_x>
+    <covariance_y>0.0001</covariance_y>
+    <covariance_yaw>0.0001</covariance_yaw>
+  </plugin>
+</model>
+{% endmacro -%}
+
 <sdf version="1.7">
-  <model name='freenove_4wd'>
-    <pose>0 0 0 0 0 0</pose>
-
-    <link name='chassis'>
-      {{ inertial(0.2, 0.01, 0.01, 0.01)|indent(6) }}
-      {{ box('chassis', 'DarkGrey', 0, 0, 0, 0.2, 0.1, 0.03)|indent(6) }}
-      {{ box('computer', 'Green', -0.05, 0, 0.03, 0.1, 0.07, 0.01)|indent(6) }}
-    </link>
-
-    {%- for data in wheel_data_list %}
-    <link name="{{data.name}}">
-      <pose>{{data.x}} {{data.y}} {{data.z}} -1.5707 0 0</pose>
-      {{ inertial(0.005, 0.0001, 0.0001, 0.0001)|indent(6) }}
-      <collision name="collision">
-        <geometry>
-          <cylinder>
-            <radius>{{wheel_diameter/2}}</radius>
-            <length>{{wheel_thickness}}</length>
-          </cylinder>
-        </geometry>
-      </collision>
-
-      <visual name="tire">
-        <geometry>
-          <cylinder>
-            <radius>{{wheel_diameter/2}}</radius>
-            <length>{{wheel_thickness}}</length>
-          </cylinder>
-        </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/DarkGrey</name>
-          </script>
-        </material>
-      </visual>
-
-      <visual name="wheel">
-        <geometry>
-          <cylinder>
-            <radius>{{wheel_diameter/2*0.95}}</radius>
-            <length>0.022</length>
-          </cylinder>
-        </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Yellow</name>
-          </script>
-        </material>
-      </visual>
-
-      <visual name="wheel_line">
-        <geometry>
-          <box>
-            <size>0.053 0.01 0.024</size>
-          </box>
-        </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/DarkGrey</name>
-          </script>
-        </material>
-      </visual>
-
-      <visual name="wheel_line2">
-        <geometry>
-          <box>
-            <size>0.01 0.053 0.024</size>
-          </box>
-        </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/DarkGrey</name>
-          </script>
-        </material>
-      </visual>
-
-    </link>
-
-    <joint type="revolute" name="{{data.name}}_joint">
-      <child>{{data.name}}</child>
-      <parent>chassis</parent>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <dynamics>
-          <friction>0.01</friction>
-          <damping>0.01</damping>
-        </dynamics>
-      </axis>
-    </joint>
-    {% endfor %}
-    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-      <updateRate>100.0</updateRate>
-      <robotNamespace/>
-      <leftFrontJoint>front_left_joint</leftFrontJoint>
-      <rightFrontJoint>front_right_joint</rightFrontJoint>
-      <leftRearJoint>rear_left_joint</leftRearJoint>
-      <rightRearJoint>rear_right_joint</rightRearJoint>
-      <wheelSeparation>{{wheel_separation}}</wheelSeparation>
-      <wheelDiameter>{{wheel_diameter}}</wheelDiameter>
-      <robotBaseFrame>rover_ground_truth</robotBaseFrame>
-      <torque>0.3</torque>
-      <broadcastTF>true</broadcastTF>
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>rover_odom</odometryTopic>
-      <odometryFrame>map</odometryFrame>
-      <covariance_x>0.0001</covariance_x>
-      <covariance_y>0.0001</covariance_y>
-      <covariance_yaw>0.0001</covariance_yaw>
-    </plugin>
-  </model>
+{{ freenove_4wd(id, pose, False) }}
 </sdf>
 <!-- vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

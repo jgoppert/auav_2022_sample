@@ -1,8 +1,13 @@
 models/px4vision/px4vision.sdf
 *.sdf.last_generated
+*.world.last_generated
 models/freenove_4wd/freenove_4wd.sdf
 models/freenove_4wd/px4vision.sdf
 models/sample_course/sample_course.sdf
 models/sample_course_1/sample_course_1.sdf
 models/sample_course_2/sample_course_2.sdf
 models/freenove_4wd_red_ball/freenove_4wd_red_ball.sdf
+worlds/trial_1.world
+worlds/trial_2.world
+worlds/trial_3.world
+worlds/trial_4.world
