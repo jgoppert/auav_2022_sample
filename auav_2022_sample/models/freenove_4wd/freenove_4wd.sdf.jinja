@@ -55,7 +55,7 @@
 <model name='{{ name }}'>
   <pose>{{pose|join(' ') }}</pose>
 
-  <link name='chassis'>
+  <link name='base_link'>
     {{ inertial(0.2, 0.01, 0.01, 0.01)|indent(6) }}
     {{ box('chassis', 'DarkGrey', 0, 0, 0, 0.2, 0.1, 0.03)|indent(6) }}
     {{ box('computer', 'Green', -0.05, 0, 0.03, 0.1, 0.07, 0.01)|indent(6) }}
@@ -136,7 +136,7 @@
 
   <joint type="revolute" name="{{data.name}}_joint">
     <child>{{data.name}}</child>
-    <parent>chassis</parent>
+    <parent>base_link</parent>
     <axis>
       <xyz>0 0 1</xyz>
       <dynamics>
@@ -155,9 +155,19 @@
   <joint name="red_ball_joint" type="fixed">
     <pose>-0.04 0 0.02 0 0 0</pose>
     <child>red_ball::link</child>
-    <parent>chassis</parent>
+    <parent>base_link</parent>
   </joint>
   {% endif %}
+
+  <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
+    <robotNamespace>{{name}}</robotNamespace>
+    <updateRate>10</updateRate>
+    <bodyName>base_link</bodyName>
+    <topicName>/qualisys/{{name}}/odom</topicName>
+    <frameName>map</frameName>
+    <xyzOffset>0 0 0</xyzOffset>
+    <rpyOffset>0 0 0</rpyOffset>
+  </plugin>
 
   <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
     <robotNamespace>{{name}}</robotNamespace>
@@ -170,7 +180,7 @@
     <wheelDiameter>{{wheel_diameter}}</wheelDiameter>
     <robotBaseFrame>rover_ground_truth</robotBaseFrame>
     <torque>0.3</torque>
-    <broadcastTF>true</broadcastTF>
+    <broadcastTF>false</broadcastTF>
     <commandTopic>cmd_vel</commandTopic>
     <odometryTopic>odom</odometryTopic>
     <odometryFrame>map</odometryFrame>

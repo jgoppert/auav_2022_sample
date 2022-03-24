@@ -200,8 +200,9 @@
 
   <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
     <robotNamespace>{{name}}</robotNamespace>
+    <updateRate>10</updateRate>
     <bodyName>base_link</bodyName>
-    <topicName>qualisys/{{name}}</topicName>
+    <topicName>/qualisys/{{name}}/odom</topicName>
     <frameName>map</frameName>
     <xyzOffset>0 0 0</xyzOffset>
     <rpyOffset>0 0 0</rpyOffset>

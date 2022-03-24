@@ -8,8 +8,20 @@
   <arg name="world" default="$(find auav_2022_sample)/worlds/trial_1.world"/>
   <param name="use_sim_time" value="true" />
 
+  <!-- tf frames -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_odom_map"
+    args="0 0 0 0 0 0 map odom "/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_base_link_camera"
+    args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+  <!--<node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"-->
+    <!--args="0 0 0 0 0 0 base_link fcu 10"/>-->
+  <!--<node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"-->
+    <!--args="0 0 0 0 0 0 local_origin map 10"/>-->
+
   <!-- Launch rqt_reconfigure -->
   <node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />
+
+  <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
 
   <!--gazebo-->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -53,15 +65,6 @@
     </node>
 
     <!-- Launch local planner -->
-    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_base_link_camera"
-      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
-    <!--<node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"-->
-      <!--args="0 0 0 0 0 0 base_link fcu 10"/>-->
-    <!--<node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"-->
-      <!--args="0 0 0 0 0 0 local_origin map 10"/>-->
-    <!--<node pkg="tf2_ros" type="static_transform_publisher" name="tf_odom_map"-->
-      <!--args="0 0 0 0 0 0 map odom "/>-->
-
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
     <!--<node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 10; $0 $@' ">-->
       <!--<remap from="move_base_simple/goal" to="/move_base_simple/goal"/>-->
