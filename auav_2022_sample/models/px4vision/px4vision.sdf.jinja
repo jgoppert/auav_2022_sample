@@ -71,8 +71,6 @@
 
   <model name="px4vision">
 
-    <!--<pose>0 0 0.2 0 0 0</pose>-->
-
     <link name="base_link">
       {{ inertial(fuse_m, fuse_ixx, fuse_iyy, fuse_izz)|indent(6) }}
 
@@ -174,7 +172,7 @@
     </plugin>
 
     <include>
-      <pose>0.09 0 -0.01 0 0 0</pose>
+      <pose>0.09 0 -0.01 0 0.5236 0</pose>
       <uri>model://intel_d435</uri>
     </include>
     <joint name="depth_camera_joint" type="fixed">

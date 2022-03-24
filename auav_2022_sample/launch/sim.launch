@@ -50,7 +50,7 @@
 
     <!-- Launch local planner -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="tf_base_link_camera"
-      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+      args="0 0 0 -1.57 0 -2.094 base_link camera_link"/>
     <!--<node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"-->
       <!--args="0 0 0 0 0 0 base_link fcu 10"/>-->
     <!--<node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"-->

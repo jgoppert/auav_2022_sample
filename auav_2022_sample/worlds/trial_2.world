@@ -18,7 +18,7 @@
 
     <include>
       <name>rover</name>
-      <uri>model://freenove_4wd</uri>
+      <uri>model://freenove_4wd_red_ball</uri>
       <pose>-6 0 0 0 0 0</pose>
     </include>
 
