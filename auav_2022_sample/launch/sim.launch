@@ -24,11 +24,15 @@
   <!-- rviz -->
   <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner.rviz" />
 
+  <!-- start rover  -->
+  <group ns="rover" clear_params="true">
+    <node name="rover_teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e">
+      <remap from='cmd_vel' to='/rover/cmd_vel'/>
+    </node>
+  </group>
+
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
-
-    <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
-    <!--<node pkg="auav_2022_sample" type="drive_rover.py" name="drive_rover" args="" output="screen" launch-prefix="bash -c 'sleep 15; $0 $@' "/>-->
 
     <!--px4 software in the loop-->
     <env name="PX4_SIM_MODEL" value="iris" />
