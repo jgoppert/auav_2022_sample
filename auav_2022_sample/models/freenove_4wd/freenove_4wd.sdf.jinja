@@ -1,11 +1,18 @@
 <?xml version="1.0" ?>
+{% set wheel_separation = 0.14 %}
+{% set wheel_diameter = 0.06 %}
+{% set wheel_thickness = 0.02 %}
+{% set x_front_axle = 0.08 %}
+{% set x_rear_axle = -0.08 %}
+{% set z_axle = -0.01 %}
+
 {# general geometry #}
 {%- set wheel_data_list = [
-  {'name': 'front_left', 'x': 0.08,  'y': 0.07,  'z': '-0.01'},
-  {'name': 'front_right', 'x': 0.08, 'y': -0.07, 'z': '-0.01'},
-  {'name': 'rear_left', 'x': -0.08,  'y': 0.07, 'z': '-0.01'},
-  {'name': 'rear_right', 'x': -0.08, 'y': -0.07,  'z': '-0.01'},
-  ]%}
+  {'name': 'front_left', 'x': x_front_axle,  'y': wheel_separation/2,  'z': z_axle},
+  {'name': 'front_right', 'x': x_front_axle, 'y': -wheel_separation/2, 'z': z_axle},
+  {'name': 'rear_left', 'x': x_rear_axle,  'y': wheel_separation/2, 'z': z_axle},
+  {'name': 'rear_right', 'x': x_rear_axle, 'y': -wheel_separation/2,  'z': z_axle},
+]%}
 
 {%- macro box(name, color, x, y, z, l, w, h) -%}
 <visual name='{{name}}_visual'>
@@ -49,20 +56,20 @@
     <pose>0 0 0 0 0 0</pose>
 
     <link name='chassis'>
-      {{ inertial(m, 0.01, 0.01, 0.01)|indent(6) }}
+      {{ inertial(0.2, 0.01, 0.01, 0.01)|indent(6) }}
       {{ box('chassis', 'DarkGrey', 0, 0, 0, 0.2, 0.1, 0.03)|indent(6) }}
       {{ box('computer', 'Green', -0.05, 0, 0.03, 0.1, 0.07, 0.01)|indent(6) }}
     </link>
 
     {%- for data in wheel_data_list %}
     <link name="{{data.name}}">
-      <pose>{{data.x}} {{data.y}} {{data.z}} 1.5707 0 0</pose>
-      {{ inertial(0.01, 0.0001, 0.0001, 0.0001)|indent(6) }}
+      <pose>{{data.x}} {{data.y}} {{data.z}} -1.5707 0 0</pose>
+      {{ inertial(0.005, 0.0001, 0.0001, 0.0001)|indent(6) }}
       <collision name="collision">
         <geometry>
           <cylinder>
-            <radius>0.03</radius>
-            <length>0.02</length>
+            <radius>{{wheel_diameter/2}}</radius>
+            <length>{{wheel_thickness}}</length>
           </cylinder>
         </geometry>
       </collision>
@@ -70,8 +77,8 @@
       <visual name="tire">
         <geometry>
           <cylinder>
-            <radius>0.03</radius>
-            <length>0.02</length>
+            <radius>{{wheel_diameter/2}}</radius>
+            <length>{{wheel_thickness}}</length>
           </cylinder>
         </geometry>
         <material>
@@ -85,7 +92,7 @@
       <visual name="wheel">
         <geometry>
           <cylinder>
-            <radius>0.028</radius>
+            <radius>{{wheel_diameter/2*0.95}}</radius>
             <length>0.022</length>
           </cylinder>
         </geometry>
@@ -127,7 +134,7 @@
 
     </link>
 
-    <joint type="revolute" name="joint_{{data.name}}">
+    <joint type="revolute" name="{{data.name}}_joint">
       <child>{{data.name}}</child>
       <parent>chassis</parent>
       <axis>
@@ -139,7 +146,25 @@
       </axis>
     </joint>
     {% endfor %}
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+      <updateRate>100.0</updateRate>
+      <robotNamespace/>
+      <leftFrontJoint>front_left_joint</leftFrontJoint>
+      <rightFrontJoint>front_right_joint</rightFrontJoint>
+      <leftRearJoint>rear_left_joint</leftRearJoint>
+      <rightRearJoint>rear_right_joint</rightRearJoint>
+      <wheelSeparation>{{wheel_separation}}</wheelSeparation>
+      <wheelDiameter>{{wheel_diameter}}</wheelDiameter>
+      <robotBaseFrame>rover_ground_truth</robotBaseFrame>
+      <torque>0.3</torque>
+      <broadcastTF>true</broadcastTF>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>rover_odom</odometryTopic>
+      <odometryFrame>map</odometryFrame>
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.0001</covariance_yaw>
+    </plugin>
   </model>
 </sdf>
-
 <!-- vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

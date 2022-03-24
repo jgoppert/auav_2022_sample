@@ -16,11 +16,20 @@
       </sky>
     </scene>
 
-    <include>
-      <name>rover</name>
-      <uri>model://freenove_4wd_red_ball</uri>
+    <model name='rover'>
       <pose>-6 0 0 0 0 0</pose>
-    </include>
+      <include>
+        <uri>model://freenove_4wd</uri>
+      </include>
+      <include>
+        <uri>model://red_ball</uri>
+      </include>
+      <joint name="red_ball_joint" type="fixed">
+        <pose>-0.04 0 0.02 0 0 0</pose>
+        <child>red_ball::link</child>
+        <parent>freenove_4wd::chassis</parent>
+      </joint>
+    </model>
 
     <include>
       <name>drone</name>
