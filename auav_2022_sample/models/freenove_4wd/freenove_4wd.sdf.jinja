@@ -8,7 +8,7 @@
   ]%}
 
 {%- macro box(name, color, x, y, z, l, w, h) -%}
-<visual name='{{name}}'>
+<visual name='{{name}}_visual'>
   <pose>{{x}} {{y}} {{z}} 0 0 0</pose>
   <geometry>
     <box>
@@ -23,7 +23,7 @@
   </material>
 </visual>
 
-<collision name='{{name}}'>
+<collision name='{{name}}_collision'>
   <pose>{{x}} {{y}} {{z}} 0 0 0</pose>
   <geometry>
     <box>

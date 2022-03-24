@@ -17,6 +17,18 @@
     </scene>
 
     <include>
+      <name>rover</name>
+      <uri>model://freenove_4wd</uri>
+      <pose>-6 0 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>drone</name>
+      <uri>model://px4vision</uri>
+      <pose>-7 0 0 0 0 0</pose>
+    </include>
+
+    <include>
       <uri>model://sun</uri>
     </include>
 
