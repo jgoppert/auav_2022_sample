@@ -155,59 +155,59 @@ int main(int argc, char **argv)
         //     i++;        // }
         ROS_INFO("Box y: [%f]", current_box_y);
         ROS_INFO("Box x: [%f]", current_box_x);
-	if (current_box_x < 0 || current_box_y < 0){
-	   angtmp.Yaw = angtmp.Yaw - 2.5;
+        if (current_box_x < 0 || current_box_y < 0){
+           angtmp.Yaw = angtmp.Yaw - 2.5;
 
-	}
-	else{
+        }
+        else{
 
           if (current_box_x > 0.6) {
             angtmp.Yaw = angtmp.Yaw - 20;
-	    ROS_INFO("right");
+            ROS_INFO("right");
 
           } else if (current_box_x < 0.4) {
             angtmp.Yaw = angtmp.Yaw + 20;
-	    ROS_INFO("Left");
+            ROS_INFO("Left");
 
           }
         
           if (current_box_y > 0.90) {
-	    chasedis = 3*(current_box_y - 0.9);
+            chasedis = 3*(current_box_y - 0.9);
             pose.pose.position.x -= chasedis*cos(angtmp.Yaw);
-	    //if(angtmp.Yaw<0){
-	      pose.pose.position.y -= chasedis*sin(angtmp.Yaw);
-	    //}
-	    //else{
-	      //pose.pose.position.y -= 2*sin(angtmp.Yaw);
-	    //}
-       	     ROS_INFO("backward"); 
+            //if(angtmp.Yaw<0){
+              pose.pose.position.y -= chasedis*sin(angtmp.Yaw);
+            //}
+            //else{
+              //pose.pose.position.y -= 2*sin(angtmp.Yaw);
+            //}
+             ROS_INFO("backward"); 
             } 
-	  else {
+          else {
             chasedis = 2*(1-current_box_y)/0.9;
             pose.pose.position.x += chasedis*cos(angtmp.Yaw);
-	    //if(angtmp.Yaw<0){
-	      //pose.pose.position.y -= 2*sin(angtmp.Yaw);
-	      //}
-	   // else {
-	      pose.pose.position.y += chasedis*sin(angtmp.Yaw);
-	     // }
-	     ROS_INFO("foreward");
+            //if(angtmp.Yaw<0){
+              //pose.pose.position.y -= 2*sin(angtmp.Yaw);
+              //}
+           // else {
+              pose.pose.position.y += chasedis*sin(angtmp.Yaw);
+             // }
+             ROS_INFO("foreward");
             }
-	}
+        }
         //angtmp.Yaw = angtmp.Yaw + 1;
-	Conversion_Euler_to_Quaternion(&qngtmp, angtmp);
-	pose.pose.orientation.x = qngtmp.x;
-	pose.pose.orientation.y = qngtmp.y;
-	pose.pose.orientation.z = qngtmp.z;
-	pose.pose.orientation.w = qngtmp.w;
+        Conversion_Euler_to_Quaternion(&qngtmp, angtmp);
+        pose.pose.orientation.x = qngtmp.x;
+        pose.pose.orientation.y = qngtmp.y;
+        pose.pose.orientation.z = qngtmp.z;
+        pose.pose.orientation.w = qngtmp.w;
         
         ROS_INFO("orientation.x:[%f]",angtmp.Yaw);
         ROS_INFO("pos.x:[%f]", 0.6*sin(angtmp.Yaw));
-	ROS_INFO("pos.y:[%f]",pose.pose.position.y);
-	ROS_INFO("pos.z:[%f]",pose.pose.position.z);
+        ROS_INFO("pos.y:[%f]",pose.pose.position.y);
+        ROS_INFO("pos.z:[%f]",pose.pose.position.z);
 
-	
-	// prev_box_y = current_box_y;
+        
+        // prev_box_y = current_box_y;
         // if (current_box_x < 0.33) {
         //     pose.rotation.
         // }
@@ -231,3 +231,4 @@ int main(int argc, char **argv)
     return 0;
 }
 
+/* vim: set et fenc=utf-8 ff=unix sts=0 sw=4 ts=4 : */
