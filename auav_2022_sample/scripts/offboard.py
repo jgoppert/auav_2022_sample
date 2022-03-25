@@ -7,7 +7,6 @@ from mavros_msgs.msg import ExtendedState, State, ParamValue
 from mavros_msgs.srv import ParamGet, ParamSet
 from sensor_msgs.msg import Imu
 from pymavlink import mavutil
-from six.moves import xrange
 from std_msgs.msg import Header
 from threading import Thread
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
@@ -135,7 +134,7 @@ class MavrosOffboardPosctl(object):
         loop_freq = 1  # Hz
         rate = rospy.Rate(loop_freq)
         param_set = False
-        for i in xrange(timeout * loop_freq):
+        for i in range(timeout * loop_freq):
             try:
                 res = self.set_param_srv(param_id, param_value)
                 if res.success:
@@ -159,7 +158,7 @@ class MavrosOffboardPosctl(object):
         loop_freq = 1  # Hz
         rate = rospy.Rate(loop_freq)
         simulation_ready = False
-        for i in xrange(timeout * loop_freq):
+        for i in range(timeout * loop_freq):
             for sub_topic in self.sub_topics_ready.keys():
                 rospy.loginfo('%s ready: %d', sub_topic, self.sub_topics_ready[sub_topic])
             if all(value for value in self.sub_topics_ready.values()):
@@ -184,7 +183,7 @@ class MavrosOffboardPosctl(object):
         loop_freq = 10  # Hz
         rate = rospy.Rate(loop_freq)
         landed_state_confirmed = False
-        for i in xrange(timeout * loop_freq):
+        for i in range(timeout * loop_freq):
             if self.extended_state.landed_state == desired_landed_state:
                 landed_state_confirmed = True
                 rospy.loginfo("landed state confirmed | seconds: {0} of {1}".
@@ -286,7 +285,7 @@ class MavrosOffboardPosctl(object):
         loop_freq = 2  # Hz
         rate = rospy.Rate(loop_freq)
         reached = False
-        for i in xrange(timeout * loop_freq):
+        for i in range(timeout * loop_freq):
             if self.is_at_position(self.pos.pose.position.x,
                                    self.pos.pose.position.y,
                                    self.pos.pose.position.z, self.radius):
@@ -327,7 +326,7 @@ class MavrosOffboardPosctl(object):
                 (0, -8, 1, 90),
                 )
 
-        for i in xrange(len(positions)):
+        for i in range(len(positions)):
             self.reach_position(positions[i][0], positions[i][1],
                                 positions[i][2], positions[i][3], 60)
 
