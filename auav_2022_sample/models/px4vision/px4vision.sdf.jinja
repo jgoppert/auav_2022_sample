@@ -30,14 +30,6 @@
 </geometry>
 {%- endmacro -%}
 
-{%- macro sphere(r) -%}
-<geometry>
-  <sphere>
-    <radius>{{r}}</radius>
-  </sphere>
-</geometry>
-{%- endmacro -%}
-
 {%- macro box(x, y, z) -%}
 <geometry>
   <box>
@@ -82,30 +74,26 @@
     </visual>
 
     <collision name="fuselage_collision">
-      <pose>0 0 0.01 0 0 0</pose>
-      {{ box(0.2, 0.1, 0.1)|indent(8) }}
+      {{ box(0.2, 0.2, 0.13)|indent(8) }}
+      <surface>
+        <contact>
+          <ode>
+            <min_depth>1e-6</min_depth>
+            <max_vel>0.01</max_vel>
+            <kp>1e6</kp>
+            <kd>1</kd>
+          </ode>
+        </contact>
+        <friction>
+          <ode/>
+        </friction>
+      </surface>
     </collision>
 
     <collision name="mast_collision">
       <pose>0.06 0 0.11 0 0 0</pose>
       {{ cylinder(0.03, 0.1) | indent(8) }}
     </collision>
-
-    {%- for n in range(4) -%}
-      {%- set x = rtr_arm_data_list[n]['x'] %}
-      {%- set y = rtr_arm_data_list[n]['y'] %}
-    <collision name="arm_{{n}}_collision">
-      <pose>{{x}} {{y}} -0.03 0 0 0 0</pose>
-      {{ sphere(0.03) | indent(8) }}
-      <surface>
-        <contact>
-          <ode>
-            <min_depth>1e-3</min_depth>
-          </ode>
-        </contact>
-      </surface>
-    </collision>
-    {% endfor %}
 
     <sensor name="depth_camera" type="depth">
       <pose>0.09 0 -0.01 0 0 0</pose>

@@ -1,14 +1,14 @@
 plugin_blacklist: []
 
 plugin_whitelist:
-- time 
 - odom 
 - sys_status
 - command
 - trajectory
 - imu
 - local_position
-#- setpoint_position
-#- param
+- param
+- setpoint_position
+#- time 
 #- waypoint
 #- altitude

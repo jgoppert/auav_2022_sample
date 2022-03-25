@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /MarkerArray1/Namespaces1
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 378
@@ -99,7 +100,7 @@ Visualization Manager:
       Marker Topic: /drone/occupied_cells_vis_array
       Name: MarkerArray
       Namespaces:
-        {}
+        map: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -121,6 +122,8 @@ Visualization Manager:
           Value: false
         camera_link:
           Value: false
+        drone:
+          Value: true
         map:
           Value: true
         map_ned:
@@ -129,10 +132,12 @@ Visualization Manager:
           Value: false
         odom_ned:
           Value: false
+        rover:
+          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
-      Show Arrows: true
+      Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
@@ -142,11 +147,15 @@ Visualization Manager:
               {}
             camera_link:
               {}
+          drone:
+            {}
           map_ned:
             {}
           odom:
             odom_ned:
               {}
+          rover:
+            {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -177,7 +186,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.6762969493865967
+      Distance: 6.608305931091309
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -185,17 +194,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.1057560443878174
-        Y: -1.9872815608978271
-        Z: 1.7418434619903564
+        X: -0.038504648953676224
+        Y: -0.45414814352989197
+        Z: 0.8338798880577087
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.16539868712425232
+      Pitch: 0.2853987216949463
       Target Frame: base_link
-      Yaw: 4.953522205352783
+      Yaw: 4.773515701293945
     Saved:
       - Class: rviz/Orbit
         Distance: 10
