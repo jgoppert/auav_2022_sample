@@ -119,11 +119,20 @@
     <!-- Launch object tracking node -->
     <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py" output="log"/>
 
-    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log">
-      <param name="resolution" value="0.1" />
-      <param name="frame_id" type="string" value="map" />
-      <param name="sensor_model/max_range" value="10.0" />
-      <remap from="cloud_in" to="camera/depth/points" />
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
+      <param name="base_frame_id" value="drone"/>
+      <remap from="cloud_in" to="camera/depth/points"/>
+      <param name="resolution" value="0.2"/>
+      <param name="frame_id" type="string" value="map"/>
+      <param name="sensor_model/max_range" value="10.0"/>
+
+      <!--Ground Filter-->
+      <!--<param name="filter_ground" value="true"/>-->
+      <!--<param name="ground_filter/distance" value="0.3"/>-->
+
+      <!--Alternative is to cut points without using filter if cpu low-->
+      <param name="pointcloud_min_z" value="0.4"/>
+      <param name="pointcloud_max_z" value="3.0"/>
     </node>
 
   </group>

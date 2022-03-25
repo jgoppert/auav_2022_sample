@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /MarkerArray1/Namespaces1
-        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 378
@@ -67,7 +66,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -82,7 +81,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/Image
       Enabled: true
       Image Topic: /drone/rover/image
@@ -145,10 +144,9 @@ Visualization Manager:
           base_link:
             base_link_frd:
               {}
+          drone:
             camera_link:
               {}
-          drone:
-            {}
           map_ned:
             {}
           odom:
@@ -157,6 +155,16 @@ Visualization Manager:
           rover:
             {}
       Update Interval: 0
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /drone/projected_map
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:
@@ -186,7 +194,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 6.608305931091309
+      Distance: 8.01093578338623
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -194,17 +202,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.038504648953676224
-        Y: -0.45414814352989197
-        Z: 0.8338798880577087
+        X: -0.5048213005065918
+        Y: 2.38926100730896
+        Z: 0.38193750381469727
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.2853987216949463
+      Pitch: 0.3253987431526184
       Target Frame: base_link
-      Yaw: 4.773515701293945
+      Yaw: 4.638513088226318
     Saved:
       - Class: rviz/Orbit
         Distance: 10

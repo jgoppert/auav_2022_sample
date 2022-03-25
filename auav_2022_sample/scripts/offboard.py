@@ -228,7 +228,7 @@ class MavrosOffboardPosctl(object):
     def send_pos(self):
         rate = rospy.Rate(10)  # Hz
         self.pos.header = Header()
-        self.pos.header.frame_id = "base_footprint"
+        self.pos.header.frame_id = "drone"
 
         while not rospy.is_shutdown():
             self.pos.header.stamp = rospy.Time.now()
@@ -310,9 +310,15 @@ class MavrosOffboardPosctl(object):
         rospy.loginfo("2: setting parameters")
         self.set_param("EKF2_AID_MASK", 24, timeout=30, is_integer=True)
         self.set_param("EKF2_HGT_MODE", 3, timeout=5, is_integer=True)
-        self.set_param("MPC_XY_VEL_MAX", 2.0, timeout=5, is_integer=False)
-        self.set_param("MPC_XY_CRUISE", 2.0, timeout=5, is_integer=False)
-        self.set_param("MPC_VEL_MANUAL", 2.0, timeout=5, is_integer=False)
+        self.set_param("EKF2_EV_DELAY", 0.0, timeout=30, is_integer=False)
+        self.set_param("MPC_XY_VEL_MAX", 1.0, timeout=5, is_integer=False)
+        self.set_param("MPC_XY_CRUISE", 0.5, timeout=5, is_integer=False)
+        self.set_param("MPC_VEL_MANUAL", 1.0, timeout=5, is_integer=False)
+        self.set_param("MPC_ACC_HOR", 1.0, timeout=5, is_integer=False)
+        self.set_param("MPC_JERK_AUTO", 2.0, timeout=5, is_integer=False)
+        self.set_param("MC_PITCHRATE_MAX", 50.0, timeout=5, is_integer=False)
+        self.set_param("MC_ROLLRATE_MAX", 50.0, timeout=5, is_integer=False)
+        self.set_param("MC_YAWRATE_MAX", 50.0, timeout=5, is_integer=False)
 
         rospy.loginfo("3: waiting for landed state")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 10, -1)
