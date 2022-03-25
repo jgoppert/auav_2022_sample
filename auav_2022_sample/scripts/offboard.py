@@ -174,7 +174,7 @@ class MavrosOffboardPosctl(object):
                 format(self.sub_topics_ready, timeout))
 
         # give parameters a chance to finish syncing
-        rospy.sleep(5)
+        rospy.sleep(10)
 
     def wait_for_landed_state(self, desired_landed_state, timeout, index):
         rospy.loginfo("waiting for landed state | state: {0}, index: {1}".
@@ -337,7 +337,6 @@ class MavrosOffboardPosctl(object):
 
 
 if __name__ == '__main__':
-    rospy.sleep(10)
     rospy.init_node('offboard_node')
     try:
         MavrosOffboardPosctl()
