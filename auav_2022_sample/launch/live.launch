@@ -28,14 +28,14 @@
     </node>
 
     <!-- Launch local planner -->
-    <node pkg="tf" type="static_transform_publisher" name="tf_fcu_link_camera"
-      args="0 0 0 0 0 0 fcu camera_link 10"/>
-    <node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"
-      args="0 0 0 0 0 0 base_link fcu 10"/>
-    <node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"
-      args="0 0 0 0 0 0 local_origin map 10"/>
-    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_qualisys_odom"
-      args="0 0 0 0 0 0 qualisys odom "/>
+    <!--<node pkg="tf" type="static_transform_publisher" name="tf_fcu_link_camera"-->
+      <!--args="0 0 0 0 0 0 fcu camera_link 10"/>-->
+    <!--<node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"-->
+      <!--args="0 0 0 0 0 0 base_link fcu 10"/>-->
+    <!--<node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"-->
+      <!--args="0 0 0 0 0 0 local_origin map 10"/>-->
+    <!--<node pkg="tf2_ros" type="static_transform_publisher" name="tf_qualisys_odom"-->
+      <!--args="0 0 0 0 0 0 qualisys odom "/>-->
 
     <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
     <node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 15; $0 $@' ">

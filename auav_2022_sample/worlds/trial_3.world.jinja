@@ -5,6 +5,12 @@
 <sdf version="1.7">
   <world name="trial_1_world">
 
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+
     <gui>
       <camera name="user_camera">
         <pose>0 -15 4 0 0.3 1.57</pose>
@@ -20,6 +26,7 @@
     </scene>
 
     {{ freenove_4wd(name='rover', pose=[0, -6, 0, 0, 0, 1.57], with_ball=False)|indent(4) }}
+
     {{ px4vision(name='drone', pose=[0, -8, 0, 0, 0, 1.57], mav_id=0)|indent(4) }}
 
     <include>

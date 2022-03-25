@@ -3,8 +3,6 @@
 
 {# fuselage #}
 {%- set fuse_m = 1.5 -%}
-{%- set fuse_r = 0.25 -%}
-{%- set fuse_h = 0.13 -%}
 {%- set fuse_ixx = 0.029125 -%}
 {%- set fuse_iyy = 0.029125 -%}
 {%- set fuse_izz = 0.055225 -%}
@@ -13,9 +11,9 @@
 {%- set rtr_m = 0.005 -%}           {# mass, kg #}
 {%- set rtr_r = 0.08  -%}           {# radius, m #}
 {%- set rtr_h = 0.001 -%}           {# thickness, m #}
-{%- set rtr_ixx = rtr_m/12*(3*rtr_r**2 + rtr_h**2) -%}
-{%- set rtr_iyy = rtr_ixx -%}
-{%- set rtr_izz = rtr_m*rtr_r**2/2 -%}
+{%- set rtr_ixx = 9.75e-07 -%}
+{%- set rtr_iyy = 0.000273104 -%}
+{%- set rtr_izz = 0.000274004 -%}
 {%- set rtr_arm_data_list = [
   {'x': 0.091,  'y': -0.108,  'dir': 'ccw'},
   {'x': -0.097, 'y': 0.108, 'dir': 'ccw'},
@@ -29,6 +27,14 @@
     <radius>{{r}}</radius>
     <length>{{h}}</length>
   </cylinder>
+</geometry>
+{%- endmacro -%}
+
+{%- macro sphere(r) -%}
+<geometry>
+  <sphere>
+    <radius>{{r}}</radius>
+  </sphere>
 </geometry>
 {%- endmacro -%}
 
@@ -76,26 +82,30 @@
     </visual>
 
     <collision name="fuselage_collision">
-      {{ box(fuse_r, fuse_r, fuse_h)|indent(8) }}
-      <surface>
-        <contact>
-          <ode>
-            <min_depth>1e-6</min_depth>
-            <max_vel>0.01</max_vel>
-            <kp>1e6</kp>
-            <kd>1</kd>
-          </ode>
-        </contact>
-        <friction>
-          <ode/>
-        </friction>
-      </surface>
+      <pose>0 0 0.01 0 0 0</pose>
+      {{ box(0.2, 0.1, 0.1)|indent(8) }}
     </collision>
 
     <collision name="mast_collision">
       <pose>0.06 0 0.11 0 0 0</pose>
       {{ cylinder(0.03, 0.1) | indent(8) }}
     </collision>
+
+    {%- for n in range(4) -%}
+      {%- set x = rtr_arm_data_list[n]['x'] %}
+      {%- set y = rtr_arm_data_list[n]['y'] %}
+    <collision name="arm_{{n}}_collision">
+      <pose>{{x}} {{y}} -0.03 0 0 0 0</pose>
+      {{ sphere(0.03) | indent(8) }}
+      <surface>
+        <contact>
+          <ode>
+            <min_depth>1e-3</min_depth>
+          </ode>
+        </contact>
+      </surface>
+    </collision>
+    {% endfor %}
 
     <sensor name="depth_camera" type="depth">
       <pose>0.09 0 -0.01 0 0 0</pose>
@@ -134,6 +144,83 @@
     </sensor>
 
   </link>
+
+  <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
+    <robotNamespace>{{name}}</robotNamespace>
+    <updateRate>10</updateRate>
+    <bodyName>base_link</bodyName>
+    <topicName>/qualisys/{{name}}/odom</topicName>
+    <frameName>map</frameName>
+    <xyzOffset>0 0 0</xyzOffset>
+    <rpyOffset>0 0 0</rpyOffset>
+  </plugin>
+
+  <include>
+    <uri>model://gps</uri>
+    <pose>0.05 0 0.05 0 0 0</pose>
+    <name>gps0</name>
+  </include>
+
+  <joint name='gps0_joint' type='fixed'>
+    <child>gps0::link</child>
+    <parent>base_link</parent>
+  </joint>
+
+  <!--<plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>-->
+    <!--<robotNamespace/>-->
+  <!--</plugin>-->
+
+  <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
+    <robotNamespace/>
+    <pubRate>100</pubRate>
+    <noiseDensity>0.0004</noiseDensity>
+    <randomWalk>6.4e-06</randomWalk>
+    <biasCorrelationTime>600</biasCorrelationTime>
+    <magTopic>/mag</magTopic>
+  </plugin>
+
+  <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
+    <robotNamespace/>
+    <pubRate>50</pubRate>
+    <baroTopic>/baro</baroTopic>
+    <baroDriftPaPerSec>0</baroDriftPaPerSec>
+  </plugin>
+
+  <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
+    <robotNamespace/>
+    <imuSubTopic>/imu</imuSubTopic>
+    <magSubTopic>/mag</magSubTopic>
+    <baroSubTopic>/baro</baroSubTopic>
+    <mavlink_addr>INADDR_ANY</mavlink_addr>
+    <mavlink_tcp_port>{{ mavlink_tcp_port + mav_id }}</mavlink_tcp_port>
+    <mavlink_udp_port>{{ mavlink_udp_port + mav_id }}</mavlink_udp_port>
+    <serialEnabled>{{ serial_enabled }}</serialEnabled>
+    <serialDevice>{{ serial_device }}</serialDevice>
+    <baudRate>{{ serial_baudrate }}</baudRate>
+    <qgc_addr>INADDR_ANY</qgc_addr>
+    <qgc_udp_port>14550</qgc_udp_port>
+    <sdk_addr>INADDR_ANY</sdk_addr>
+    <sdk_udp_port>14540</sdk_udp_port>
+    <hil_mode>{{ hil_mode }}</hil_mode>
+    <hil_state_level>0</hil_state_level>
+    <send_vision_estimation>0</send_vision_estimation>
+    <send_odometry>0</send_odometry>
+    <enable_lockstep>1</enable_lockstep>
+    <use_tcp>1</use_tcp>
+    <motorSpeedCommandPubTopic>/command/motor_speed</motorSpeedCommandPubTopic>
+    <control_channels>
+      {%- for n in range(4) -%}
+      <channel name='rotor{{ n + 1 }}'>
+        <input_index>{{ n }}</input_index>
+        <input_offset>0</input_offset>
+        <input_scaling>1000</input_scaling>
+        <zero_position_disarmed>0</zero_position_disarmed>
+        <zero_position_armed>100</zero_position_armed>
+        <joint_control_type>velocity</joint_control_type>
+      </channel>
+      {% endfor %}
+    </control_channels>
+  </plugin>
 
   {%- for n in range(4) -%}
 
@@ -188,42 +275,17 @@
     <maxRotVelocity>1100</maxRotVelocity>
     <motorConstant>5.84e-06</motorConstant>
     <momentConstant>0.06</momentConstant>
-    <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
+    <commandSubTopic>/command/motor_speed</commandSubTopic>
     <motorNumber>{{n}}</motorNumber>
     <rotorDragCoefficient>0.000175</rotorDragCoefficient>
     <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
     <motorSpeedPubTopic>/motor_speed/{{n}}</motorSpeedPubTopic>
     <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
   </plugin>
-
   {% endfor %}
 
-  <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
-    <robotNamespace>{{name}}</robotNamespace>
-    <updateRate>10</updateRate>
-    <bodyName>base_link</bodyName>
-    <topicName>/qualisys/{{name}}/odom</topicName>
-    <frameName>map</frameName>
-    <xyzOffset>0 0 0</xyzOffset>
-    <rpyOffset>0 0 0</rpyOffset>
-  </plugin>
-
-  <plugin name='magnetometer_plugin' filename='libgazebo_magnetometer_plugin.so'>
-    <robotNamespace/>
-    <pubRate>100</pubRate>
-    <noiseDensity>0.0004</noiseDensity>
-    <randomWalk>6.4e-06</randomWalk>
-    <biasCorrelationTime>600</biasCorrelationTime>
-    <magTopic>/mag</magTopic>
-  </plugin>
-
-  <plugin name='barometer_plugin' filename='libgazebo_barometer_plugin.so'>
-    <robotNamespace/>
-    <pubRate>50</pubRate>
-    <baroTopic>/baro</baroTopic>
-    <baroDriftPaPerSec>0</baroDriftPaPerSec>
-  </plugin>
-
+  <!--It is important that the imu plugin is the last one, as it is called the most often
+  plugins are called in reverse order.-->
   <plugin name='rotors_gazebo_imu_plugin' filename='libgazebo_imu_plugin.so'>
     <robotNamespace/>
     <linkName>base_link</linkName>
@@ -236,42 +298,6 @@
     <accelerometerRandomWalk>0.006</accelerometerRandomWalk>
     <accelerometerBiasCorrelationTime>300.0</accelerometerBiasCorrelationTime>
     <accelerometerTurnOnBiasSigma>0.196</accelerometerTurnOnBiasSigma>
-  </plugin>
-
-  <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
-    <robotNamespace/>
-    <imuSubTopic>/imu</imuSubTopic>
-    <magSubTopic>/mag</magSubTopic>
-    <baroSubTopic>/baro</baroSubTopic>
-    <mavlink_addr>INADDR_ANY</mavlink_addr>
-    <mavlink_tcp_port>{{ mavlink_tcp_port + mav_id }}</mavlink_tcp_port>
-    <mavlink_udp_port>{{ mavlink_udp_port + mav_id }}</mavlink_udp_port>
-    <serialEnabled>{{ serial_enabled }}</serialEnabled>
-    <serialDevice>{{ serial_device }}</serialDevice>
-    <baudRate>{{ serial_baudrate }}</baudRate>
-    <qgc_addr>INADDR_ANY</qgc_addr>
-    <qgc_udp_port>14550</qgc_udp_port>
-    <sdk_addr>INADDR_ANY</sdk_addr>
-    <sdk_udp_port>14540</sdk_udp_port>
-    <hil_mode>{{ hil_mode }}</hil_mode>
-    <hil_state_level>0</hil_state_level>
-    <send_vision_estimation>0</send_vision_estimation>
-    <send_odometry>1</send_odometry>
-    <enable_lockstep>1</enable_lockstep>
-    <use_tcp>1</use_tcp>
-    <motorSpeedCommandPubTopic>/gazebo/command/motor_speed</motorSpeedCommandPubTopic>
-    <control_channels>
-      {%- for n in range(4) -%}
-      <channel name='rotor{{ n + 1 }}'>
-        <input_index>{{ n }}</input_index>
-        <input_offset>0</input_offset>
-        <input_scaling>1000</input_scaling>
-        <zero_position_disarmed>0</zero_position_disarmed>
-        <zero_position_armed>100</zero_position_armed>
-        <joint_control_type>velocity</joint_control_type>
-      </channel>
-      {% endfor %}
-    </control_channels>
   </plugin>
 
 </model>

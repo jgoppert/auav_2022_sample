@@ -1,4 +1,7 @@
 <launch>
+  <!--px4 environment variables-->
+  <env name="PX4_SIM_SPEED_FACTOR" value="1"/>
+
   <!-- gazebo configs -->
   <arg name="gui" default="true"/>
   <arg name="debug" default="false"/>
@@ -6,7 +9,7 @@
   <arg name="paused" default="false"/>
   <arg name="interactive" default="false"/>
   <arg name="world" default="$(find auav_2022_sample)/worlds/trial_1.world"/>
-  <param name="use_sim_time" value="true" />
+  <arg name="lockstep" default="true"/>
 
   <!-- tf frames -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="tf_odom_map"
@@ -19,7 +22,7 @@
     <!--args="0 0 0 0 0 0 local_origin map 10"/>-->
 
   <!-- Launch rqt_reconfigure -->
-  <node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />
+  <!--<node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />-->
 
   <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
 
@@ -31,6 +34,8 @@
       <arg name="verbose" value="$(arg verbose)"/>
       <arg name="paused" value="$(arg paused)"/>
       <arg name="respawn_gazebo" value="false"/>
+      <arg unless="$(arg lockstep)" name="extra_gazebo_args" value=""/>
+      <arg     if="$(arg lockstep)" name="extra_gazebo_args" value="--lockstep"/>
   </include>
 
   <!-- rviz -->
@@ -46,10 +51,15 @@
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
 
-    <!--px4 software in the loop-->
+    <!--px4 environment variables-->
+    <env name="PX4_HOME_LAT" value="40.41536" />
+    <env name="PX4_HOME_LON" value="-86.93288" />
+    <env name="PX4_HOME_ALT" value="182" />
     <env name="PX4_SIM_MODEL" value="iris" />
     <env name="PX4_ESTIMATOR" value="ekf2" />
-    <node name="sitl" pkg="px4" type="px4" output="log" launch-prefix="xterm -e"
+   
+    <!--px4 software in the loop-->
+   <node name="sitl" pkg="px4" type="px4" output="screen" launch-prefix="xterm -e"
       args="$(find px4)/../../../build/px4/etc -s etc/init.d-posix/rcS" required="true"/>
 
     <!-- mavros -->
@@ -79,24 +89,24 @@
     <!--<node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>-->
 
     <!-- Launch path_planning node -->
-    <node name="path_planning" pkg="path_planning" type="path_planning_node" output="screen"/>
+    <!--<node name="path_planning" pkg="path_planning" type="path_planning_node" output="screen"/>-->
 
     <!-- Launch object tracking node -->
-    <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/>
+    <!--<node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/>-->
 
-    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
-      <param name="resolution" value="0.2" />
+    <!--<node pkg="octomap_server" type="octomap_server_node" name="octomap_server">-->
+      <!--<param name="resolution" value="0.2" />-->
       
-      <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
-      <param name="frame_id" type="string" value="map" />
+      <!--[> fixed map frame (set to 'map' if SLAM or localization running!) <]-->
+      <!--<param name="frame_id" type="string" value="map" />-->
       
-      <!-- maximum range to integrate (speedup!) -->
-      <param name="sensor_model/max_range" value="10.0" />
+      <!--[> maximum range to integrate (speedup!) <]-->
+      <!--<param name="sensor_model/max_range" value="10.0" />-->
       
-      <!-- data source to integrate (PointCloud2) -->
-      <remap from="cloud_in" to="camera/depth/points" />
+      <!--[> data source to integrate (PointCloud2) <]-->
+      <!--<remap from="cloud_in" to="camera/depth/points" />-->
     
-    </node>
+    <!--</node>-->
 
   </group>
 
