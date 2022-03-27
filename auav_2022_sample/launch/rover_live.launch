@@ -1,0 +1,15 @@
+<launch>
+
+  <!-- start rover  -->
+  <group ns="rover" clear_params="true">
+
+    <!--rover i2c driver-->
+    <node name="rover_i2c_driver" pkg="auav_2022_sample" type="rover_i2c_driver.py" output="screen">
+      <remap from='cmd_vel' to='/rover/cmd_vel'/>
+    </node>
+
+  </group>
+
+</launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->
