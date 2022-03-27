@@ -1,8 +1,5 @@
 <launch>
 
-  <!-- rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner_live.rviz" />
-
   <!-- start rover  -->
   <group ns="rover" clear_params="true">
 

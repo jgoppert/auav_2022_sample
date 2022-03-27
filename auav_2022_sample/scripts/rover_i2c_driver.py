@@ -16,12 +16,15 @@ class RoverI2cDriver:
     def move(self, vel, omega):
         scale = 2000
         speed_max = 2000
-        lspeed = int(scale*(vel + omega))
-        rspeed = int(scale*(vel - omega))
+        lspeed = scale*(-2*vel + 0.5*omega)
+        rspeed = scale*(-2*vel - 0.5*omega)
         if abs(lspeed) > speed_max:
             lspeed = speed_max*lspeed/abs(lspeed)
         if abs(rspeed) > speed_max:
             rspeed = speed_max*rspeed/abs(rspeed)
+
+        lspeed = int(lspeed)
+        rspeed = int(rspeed)
         self.motor.setMotorModel(
                 lspeed, lspeed, rspeed, rspeed)
 
