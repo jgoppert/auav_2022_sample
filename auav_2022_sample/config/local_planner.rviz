@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: Color Tracking
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -144,9 +144,10 @@ Visualization Manager:
           base_link:
             base_link_frd:
               {}
-          drone:
             camera_link:
               {}
+          drone:
+            {}
           map_ned:
             {}
           odom:
@@ -165,6 +166,22 @@ Visualization Manager:
       Topic: /drone/projected_map
       Unreliable: false
       Use Timestamp: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /drone/frontier_cells_vis_array
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /drone/frontier_goal_marker
+      Name: Marker
+      Namespaces:
+        map: true
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -252,5 +269,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1848
-  X: 1992
+  X: 72
   Y: 27

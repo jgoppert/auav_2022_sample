@@ -1,6 +1,7 @@
 <launch>
   <!--px4 environment variables-->
   <env name="PX4_SIM_SPEED_FACTOR" value="1"/>
+  <arg name="with_fbet" default="false"/>
 
   <!-- gazebo configs -->
   <arg name="gui" default="true"/>
@@ -112,6 +113,13 @@
 
     <!-- Launch offboard node -->
     <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen" launch-prefix="xterm -T 'offboard' -e"/>
+
+    <!-- Frontier based exploration -->
+    <group if="$(arg with_fbet)">
+      <node name="fbet" pkg="fbet" type="fbet_node">
+        <remap from="cloud_in" to="camera/depth/points"/>
+      </node>
+    </group>
 
     <!-- Launch path_planning node -->
     <node name="path_planning" pkg="path_planning" type="path_planning_node" output="log"/>
