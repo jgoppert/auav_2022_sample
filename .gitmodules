@@ -7,3 +7,6 @@
 [submodule "path_planning"]
 	path = path_planning
 	url = https://github.com/jgoppert/path_planning
+[submodule "fbet"]
+	path = fbet
+	url = https://github.com/jgoppert/fbet
