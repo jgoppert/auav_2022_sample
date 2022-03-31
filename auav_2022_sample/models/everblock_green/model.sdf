@@ -7,7 +7,7 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>0.762 0.762 2.1336</size>
+            <size>0.4572 0.4572 2.1336</size>
           </box>
         </geometry>
       </collision>
@@ -15,7 +15,7 @@
         <geometry>
           <mesh>
             <uri>model://everblock_green/meshes/block.dae</uri>
-            <scale>0.762 0.762 2.1336</scale>
+            <scale>0.4572 0.4572 2.1336</scale>
           </mesh>
 	  	</geometry>
         <material>
