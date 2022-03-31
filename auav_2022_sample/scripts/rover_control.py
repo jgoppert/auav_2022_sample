@@ -99,7 +99,7 @@ def compute_control(t, x, y, theta, ref_data):
     chi = eta.log()
 
     # control parameters
-    K_x = 2.0  # makes vehicle speed up to elim. along track error
+    K_x = 1.0  # makes vehicle speed up to elim. along track error
     K_y_to_theta = 2.0  # makes vehicle turn to elim. cross track error
     K_theta = 4.0  # makes vehicle rotate faster for given theta error
     omega_max = np.deg2rad(180)  # deg/s max rotation rate saturation
