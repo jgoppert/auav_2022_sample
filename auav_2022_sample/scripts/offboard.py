@@ -332,9 +332,10 @@ class MavrosOffboardPosctl(object):
                 (0, -8, 1, 90),
                 )
 
+        timeout = 1000000
         for i in range(len(positions)):
             self.reach_position(positions[i][0], positions[i][1],
-                                positions[i][2], positions[i][3], 60)
+                                positions[i][2], positions[i][3], timeout)
 
         rospy.loginfo("5: please land and disarm drone")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 45, 0)

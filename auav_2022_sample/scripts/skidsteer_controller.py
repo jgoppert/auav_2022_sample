@@ -81,7 +81,7 @@ class RoverController(object):
                     trans.transform.rotation.w], axes='rzyx')[0]
 
             v, omega = compute_control(t=t, x=x, y=y, theta=theta, ref_data=ref_data)
-            rospy.loginfo_throttle(1, 't: %g x: %g y: %g theta: %g v: %g omega: %g', t, x, y, theta, v, omega)
+            # rospy.loginfo_throttle(1, 't: %g x: %g y: %g theta: %g v: %g omega: %g', t, x, y, theta, v, omega)
 
             # publish control
             self.move(v, omega)
