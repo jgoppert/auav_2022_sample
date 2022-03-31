@@ -12,3 +12,4 @@ worlds/trial_2.world
 worlds/trial_3.world
 worlds/trial_4.world
 *__pycache__*
+.ipynb_checkpoints/
