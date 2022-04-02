@@ -129,7 +129,7 @@
     <node name="roi_to_point" pkg="auav_2022_sample" type="roi_to_point.py" output="log"/>
 
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
-      <param name="base_frame_id" value="drone"/>
+      <param name="base_frame_id" value="base_link"/>
       <remap from="cloud_in" to="camera/depth/points"/>
       <param name="resolution" value="0.2"/>
       <param name="frame_id" type="string" value="map"/>
