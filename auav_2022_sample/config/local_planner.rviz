@@ -19,8 +19,7 @@ Panels:
     Name: Tool Properties
     Splitter Ratio: 0.5886790156364441
   - Class: rviz/Views
-    Expanded:
-      - /Current View1
+    Expanded: ~
     Name: Views
     Splitter Ratio: 0.5
   - Class: rviz/Time
@@ -221,13 +220,13 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.279715538024902
+      Distance: 11.481271743774414
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
-      Field of View: 1
+      Field of View: 0.7853981852531433
       Focal Point:
         X: 0
         Y: 0
@@ -237,9 +236,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6747975945472717
-      Target Frame: rover
-      Yaw: 4.25040864944458
+      Pitch: 0.935398280620575
+      Target Frame: drone
+      Yaw: 4.715412139892578
     Saved:
       - Class: rviz/Orbit
         Distance: 15
