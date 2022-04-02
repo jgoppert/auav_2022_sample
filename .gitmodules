@@ -10,3 +10,6 @@
 [submodule "fbet"]
 	path = fbet
 	url = https://github.com/jgoppert/fbet
+[submodule "object_tracking"]
+	path = object_tracking
+	url = https://github.com/alexrog/object_tracking.git
