@@ -72,7 +72,7 @@
   <group ns="drone" clear_params="true">
 
     <!--qualiysis sim-->
-    <node name="rover_odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+    <node name="drone_odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
       <remap from="odom" to="/qualisys/drone/odom"/>
       <param name="child_frame_override" value="drone"/>
     </node>
