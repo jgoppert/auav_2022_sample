@@ -14,7 +14,7 @@
         </inertia>
       </inertial>
 
-      <collision name='collision'>
+      <collision name='collision body'>
         <geometry>
           <box>
             <size>0.46 0.225 0.08</size>
@@ -22,7 +22,7 @@
         </geometry>
       </collision>
 
-      <visual name='visual'>
+      <visual name='visual body'>
         <geometry>
           <box>
             <size>0.46 0.225 0.08</size>
@@ -52,7 +52,7 @@
 
       </visual>
 
-      <collision name='collision'>
+      <collision name='collision cage'>
         <pose>-0.08 0 0.08 0 0 0</pose>
         <geometry>
           <box>
