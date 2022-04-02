@@ -44,7 +44,7 @@ class ColorDetection:
         lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
         mask = cv2.inRange(lab, lower_range, upper_range)
 
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(10, 10))
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5, 5))
         mask = cv2.erode(mask, kernel, iterations=1)
         mask = cv2.dilate(mask, kernel, iterations=1)
         contours = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[0]
