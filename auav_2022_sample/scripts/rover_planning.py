@@ -279,7 +279,7 @@ class RoverPlanner:
             plt.title('omega')
             plt.plot(t, np.rad2deg(f_ref_omega(t)))
             plt.grid()
-            plt.vlines(np.cumsum(self.leg_times), -2, 2, color='r', alpha=0.5)
+            plt.vlines(np.cumsum(self.leg_times), -200, 200, color='r', alpha=0.5)
             plt.xlabel('t, sec')
             plt.ylabel('deg/s')
 
