@@ -48,13 +48,13 @@
   <!--   <test_depend>gtest</test_depend> -->
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
-  <depend>mavros</depend>
+  <exec_depend>mavros</exec_depend>
   <exec_depend>qualisys</exec_depend>
   <exec_depend>path_planning</exec_depend>
-  <exec_depend>local_planner</exec_depend>
+  <!--<exec_depend>local_planner</exec_depend>-->
   <exec_depend>octomap_server</exec_depend>
   <depend>gazebo_ros</depend>
-  <depend>gazebo_msgs</depend>
+  <exec_depend>gazebo_msgs</exec_depend>
   <buildtool_depend>catkin</buildtool_depend>
   <buildtool_depend>gazebo_ros</buildtool_depend>
 

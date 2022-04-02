@@ -1,0 +1,251 @@
+<?xml version="1.0" ?>
+{% set wheel_separation = 0.16 -%}
+{% set wheel_base = 0.3 -%}
+{% set wheel_diameter = 0.11 -%}
+{% set wheel_thickness = 0.04 -%}
+{% set z_axle = -0.08 -%}
+
+{# general geometry -#}
+{%- set wheel_data_list = [
+{'name': 'front_left', 'x': wheel_base/2,  'y': wheel_separation/2,  'z': z_axle},
+{'name': 'front_right', 'x': wheel_base/2, 'y': -wheel_separation/2, 'z': z_axle},
+{'name': 'rear_left', 'x': -wheel_base/2,  'y': wheel_separation/2, 'z': z_axle},
+{'name': 'rear_right', 'x': -wheel_base/2, 'y': -wheel_separation/2,  'z': z_axle},
+] -%}
+
+{%- macro box(name, color, x, y, z, l, w, h) -%}
+<visual name='{{name}}_visual'>
+  <pose>{{x}} {{y}} {{z}} 0 0 0</pose>
+  <geometry>
+    <box>
+      <size>{{l}} {{w}} {{h}}</size>
+    </box>
+  </geometry>
+  <material>
+    <script>
+      <uri>file://media/materials/scripts/gazebo.material</uri>
+      <name>Gazebo/{{color}}</name>
+    </script>
+  </material>
+</visual>
+
+<collision name='{{name}}_collision'>
+  <pose>{{x}} {{y}} {{z}} 0 0 0</pose>
+  <geometry>
+    <box>
+      <size>{{l}} {{w}} {{h}}</size>
+    </box>
+  </geometry>
+</collision>
+{% endmacro -%}
+
+{%- macro inertial(m, ixx, iyy, izz) -%}
+<inertial>
+  <mass>{{m}}</mass>
+  <inertia>
+    <ixx>{{ixx}}</ixx>
+    <iyy>{{iyy}}</iyy>
+    <izz>{{izz}}</izz>
+  </inertia>
+</inertial>
+{% endmacro %}
+
+{%- macro axial_scx10(name, pose) -%}
+<model name='{{ name }}'>
+  <pose>{{pose|join(' ') }}</pose>
+
+  <link name='base_link'>
+    {{ inertial(1, 0.1, 0.1, 0.1)|indent(6) }}
+
+    <collision name='collision body'>
+      <geometry>
+        <box>
+          <size>0.46 0.225 0.08</size>
+        </box>
+      </geometry>
+    </collision>
+
+    <visual name='visual body'>
+      <geometry>
+        <box>
+          <size>0.46 0.225 0.08</size>
+        </box>
+      </geometry>
+
+      <material>
+        <ambient>0.3 0.4 0.2 </ambient>
+        <diffuse>0.4 0.5 0.3 </diffuse>
+      </material>
+    </visual>
+
+    <visual name='cage'>
+      <pose>-0.08 0 0.08 0 0 0</pose>
+      <geometry>
+        <box>
+          <size>0.3 0.2 0.08</size>
+        </box>
+      </geometry>
+
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/DarkGrey</name>
+        </script>
+      </material>
+
+    </visual>
+
+    <collision name='collision cage'>
+      <pose>-0.08 0 0.08 0 0 0</pose>
+      <geometry>
+        <box>
+          <size>0.3 0.2 0.08</size>
+        </box>
+      </geometry>
+    </collision>
+
+
+  </link>
+
+  {%- for data in wheel_data_list %}
+  <link name="{{data.name}}_strut">
+    {{ inertial(0.01, 0.001, 0.001, 0.001)|indent(6) }}
+    <pose>{{data.x}} {{data.y}} {{data.z}} 0 0 0</pose>
+  </link>
+
+  <link name="{{data.name}}_wheel">
+    <pose>{{data.x}} {{data.y}} {{data.z}} -1.5707 0 0</pose>
+    {{ inertial(0.01, 0.001, 0.001, 0.001)|indent(6) }}
+    <collision name="collision">
+      <geometry>
+        <cylinder>
+          <radius>{{wheel_diameter/2}}</radius>
+          <length>{{wheel_thickness}}</length>
+        </cylinder>
+      </geometry>
+    </collision>
+
+    <visual name="tire">
+      <geometry>
+        <cylinder>
+          <radius>{{wheel_diameter/2}}</radius>
+          <length>{{wheel_thickness}}</length>
+        </cylinder>
+      </geometry>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/DarkGrey</name>
+        </script>
+      </material>
+    </visual>
+
+  </link>
+
+  {% if data.x > 0 %}
+  <joint type="revolute" name="{{data.name}}_steer_joint">
+    <parent>base_link</parent>
+    <child>{{data.name}}_strut</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <dynamics>
+        <friction>0.01</friction>
+        <damping>0.01</damping>
+      </dynamics>
+      <limit>
+        <lower>-1</lower>
+        <upper>1</upper>
+      </limit>
+    </axis>
+  </joint>
+  {% else %}
+  <joint type="fixed" name="{{data.name}}_steer_joint">
+    <parent>base_link</parent>
+    <child>{{data.name}}_strut</child>
+  </joint>
+  {% endif %}
+
+  <joint type="revolute" name="{{data.name}}_drive_joint">
+    <parent>{{data.name}}_strut</parent>
+    <child>{{data.name}}_wheel</child>
+    <axis>
+      <xyz>0 0 1</xyz>
+      <dynamics>
+        <friction>0.01</friction>
+        <damping>0.01</damping>
+      </dynamics>
+    </axis>
+  </joint>
+  {% endfor %}
+
+  <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
+    <robotNamespace>{{name}}</robotNamespace>
+    <updateRate>10</updateRate>
+    <bodyName>base_link</bodyName>
+    <topicName>/qualisys/{{name}}/odom</topicName>
+    <frameName>map</frameName>
+    <xyzOffset>0 0 0</xyzOffset>
+    <rpyOffset>0 0 0</rpyOffset>
+  </plugin>
+
+  <plugin name="ackerman" filename="libgazebo_ackerman.so">
+    <robotNamespace>{{name}}</robotNamespace>
+    <debug>false</debug>
+    <commandTopic>cmd_vel</commandTopic>
+    <odometryTopic>odom</odometryTopic>
+    <robotBaseFrame>{{name}}</robotBaseFrame>
+    <publishWheelTF>false</publishWheelTF>
+    <publishOdomTF>true</publishOdomTF>
+    <wheelDiameter>{{wheel_diamter}}</wheelDiameter>
+    <wheelAcceleration>0.0</wheelAcceleration>
+    <wheelTorque>5.0</wheelTorque>
+    <updateRate>50.0</updateRate>
+
+    <!-- Wheel Placement -->
+    <wheelbase>{{wheel_base}}</wheelbase>
+    <wheelSeparation>{{wheel_separation}}</wheelSeparation>
+     
+    <!-- Wheel Joints -->
+    <FR_steerJoint>front_right_steer_joint</FR_steerJoint>
+    <FR_driveJoint>front_right_drive_joint</FR_driveJoint>
+    <FL_steerJoint>front_left_steer_joint</FL_steerJoint>
+    <FL_driveJoint>front_left_drive_joint</FL_driveJoint>
+    <RL_steerJoint>rear_left_steer_joint</RL_steerJoint>
+    <RL_driveJoint>rear_left_drive_joint</RL_driveJoint>
+    <RR_steerJoint>rear_right_steer_joint</RR_steerJoint>
+    <RR_driveJoint>rear_right_drive_joint</RR_driveJoint>
+
+    <!--PID settings - - - - - - - - - - - - - - - - - - - -
+        p      -    proportional gain
+        i      -    intergral gain
+        d      -    derivative gain
+        imax   -    anti windup max
+        imin   -    anti windup min
+    - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+    <!-- Wheel Velocity PID settings -->
+    <drive_p>5.0</drive_p>
+    <drive_i>0.01</drive_i>
+    <drive_d>0.01</drive_d>
+    <drive_imax>1.0</drive_imax>
+    <drive_imin>-1.0</drive_imin>
+    <drive_max_effort>10.0</drive_max_effort>
+
+    <!-- Steering PID settings -->
+    <steer_p>5.0</steer_p>
+    <steer_i>5.0</steer_i>
+    <steer_d>0.1</steer_d>
+    <steer_imax>5.0</steer_imax>
+    <steer_imin>-5.0</steer_imin>
+    <steer_max_effort>100.0</steer_max_effort>
+    <steer_init_angle>0.3</steer_init_angle>
+
+  </plugin>
+
+</model>
+{% endmacro -%}
+
+<sdf version="1.7">
+{{ axial_scx10(name='axial_scx10', pose=[0, 0, 0.15, 0, 0, 0]) }}
+</sdf>
+<!-- vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : -->

@@ -30,6 +30,17 @@
   <!-- rviz -->
   <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner.rviz" />
 
+  <!-- start distration rover  -->
+  <group ns="axial_scx10" clear_params="true">
+
+    <!--keyboard rover control-->
+    <node name="rover_teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e">
+      <remap from='cmd_vel' to='/axial_scx10/cmd_vel'/>
+    </node>
+
+  </group>
+
+
   <!-- start rover  -->
   <group ns="rover" clear_params="true">
 
@@ -38,11 +49,6 @@
       <remap from="odom" to="/qualisys/rover/odom"/>
       <param name="child_frame_override" value="rover"/>
     </node>
-
-    <!--keyboard rover control-->
-    <!--<node name="rover_teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e">-->
-      <!--<remap from='cmd_vel' to='/rover/cmd_vel'/>-->
-    <!--</node>-->
 
     <!--scripted rover control-->
     <node name="skidsteer_controller" pkg="auav_2022_sample" type="skidsteer_controller.py" output="screen">

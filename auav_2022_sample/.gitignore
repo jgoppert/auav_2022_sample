@@ -13,3 +13,4 @@ worlds/trial_3.world
 worlds/trial_4.world
 *__pycache__*
 .ipynb_checkpoints/
+models/axial_scx10/axial_scx10.sdf

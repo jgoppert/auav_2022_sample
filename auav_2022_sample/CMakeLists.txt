@@ -8,14 +8,17 @@ project(auav_2022_sample)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-	geometry_msgs
-	mavros_msgs
-	roscpp
-	std_msgs
+	gazebo_ros
+	# currently using python for all of this
+	#geometry_msgs
+	#mavros_msgs
+	#roscpp
+	#std_msgs
 	)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(gazebo REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -164,13 +167,23 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
- ${catkin_INCLUDE_DIRS}
 )
+
+link_directories(
+	${GAZEBO_LIBRARY_DIRS}
+	${catkin_LIBRARY_DIRS}
+	)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/auav_2022_sample.cpp
 # )
+add_library(gazebo_ackerman SHARED src/gazebo_ackerman.cpp)
+target_include_directories(gazebo_ackerman PUBLIC ${GAZEBO_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+target_link_libraries(gazebo_ackerman
+	gazebo_ros_utils
+	${catkin_LIBRARIES}
+	${GAZEBO_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

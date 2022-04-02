@@ -131,6 +131,23 @@
       </plugin>
     </sensor>
 
+    <sensor name="gps" type="gps">
+      <pose>0 0 0 0 0 0</pose>
+      <update_rate>5.0</update_rate>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <plugin name="gps_plugin" filename="libgazebo_gps_plugin.so">
+        <robotNamespace></robotNamespace>
+        <gpsNoise>true</gpsNoise>
+        <gpsXYRandomWalk>2.0</gpsXYRandomWalk>
+        <gpsZRandomWalk>4.0</gpsZRandomWalk>
+        <gpsXYNoiseDensity>2.0e-4</gpsXYNoiseDensity>
+        <gpsZNoiseDensity>4.0e-4</gpsZNoiseDensity>
+        <gpsVXYNoiseDensity>0.2</gpsVXYNoiseDensity>
+        <gpsVZNoiseDensity>0.4</gpsVZNoiseDensity>
+      </plugin>
+    </sensor>
+
   </link>
 
   <plugin name='p3d' filename='libgazebo_ros_p3d.so'>
@@ -142,17 +159,6 @@
     <xyzOffset>0 0 0</xyzOffset>
     <rpyOffset>0 0 0</rpyOffset>
   </plugin>
-
-  <include>
-    <uri>model://gps</uri>
-    <pose>0.05 0 0.05 0 0 0</pose>
-    <name>gps0</name>
-  </include>
-
-  <joint name='gps0_joint' type='fixed'>
-    <child>gps0::link</child>
-    <parent>base_link</parent>
-  </joint>
 
   <!--<plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin.so'>-->
     <!--<robotNamespace/>-->
