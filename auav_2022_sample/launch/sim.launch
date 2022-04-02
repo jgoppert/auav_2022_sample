@@ -12,20 +12,8 @@
   <arg name="world" default="$(find auav_2022_sample)/worlds/trial_1.world"/>
   <arg name="lockstep" default="true"/>
 
-  <!-- tf frames -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_odom_map"
-    args="0 0 0 0 0 0 map odom "/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_base_link_camera"
-    args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
-  <!--<node pkg="tf" type="static_transform_publisher" name="tf_base_link_fcu"-->
-    <!--args="0 0 0 0 0 0 base_link fcu 10"/>-->
-  <!--<node pkg="tf" type="static_transform_publisher" name="tf_local_origin_map"-->
-    <!--args="0 0 0 0 0 0 local_origin map 10"/>-->
-
   <!-- Launch rqt_reconfigure -->
   <!--<node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />-->
-
-  <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
 
   <!--gazebo-->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -46,7 +34,7 @@
   <group ns="rover" clear_params="true">
 
     <!--qualiysis sim-->
-    <node name="rover_odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
       <remap from="odom" to="/qualisys/rover/odom"/>
       <param name="child_frame_override" value="rover"/>
     </node>
@@ -71,8 +59,17 @@
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
 
+    <!--topic relay for mocap-->
+    <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
+
+    <!-- tf frames -->
+    <node name="tf_odom_map" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 0 0 0 map odom "/>
+    <node name="tf_base_link_camera" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+
     <!--qualiysis sim-->
-    <node name="drone_odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
       <remap from="odom" to="/qualisys/drone/odom"/>
       <param name="child_frame_override" value="drone"/>
     </node>
