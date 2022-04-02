@@ -326,7 +326,7 @@ class MavrosOffboardPosctl(object):
         rospy.loginfo("4: please put the drone in offboard mode and then arm it")
         positions = (
                 (0, -8, 1, 90),
-                (0, 0, 1, 90),
+                (0, 0, 2, 90),
                 (-3, 0, 1, 180),
                 (-3, -7, 1, -90),
                 (0, -8, 1, 90),
