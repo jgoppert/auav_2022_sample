@@ -41,12 +41,29 @@ class SE2:
         return 'x {:g}: y: {:g} theta: {:g}'.format(self.x, self.y, self.theta)
     
     def log(self):
-        # TODO: this is slow, could use analytical version
-        return se2.from_matrix(scipy.linalg.logm(self.to_matrix()))
+        x = self.x
+        y = self.y
+        theta = self.theta
+        if (np.abs(theta) > 1e-2):
+            a = np.sin(theta)/theta
+            b = (1 - np.cos(theta))/theta
+        else:
+            a = 1 - theta**2/6 + theta**4/120
+            b = theta/2 - theta**3/24 + theta**5/720
+        V_inv = np.array([
+            [a, b],
+            [-b, a]])/(a**2 + b**2)
+        u = V_inv@np.array([x, y])
+        return SE2(x=u[0], y=u[1], theta=theta)
     
     def inv(self):
-        # TODO: this is slow, could use analytical version
-        return self.from_matrix(np.linalg.inv(self.to_matrix()))
+        x = self.x
+        y = self.y
+        theta = self.theta
+        t = -np.array([
+            [np.cos(theta), np.sin(theta)],
+            [-np.sin(theta), np.cos(theta)]])@np.array([x, y])
+        return SE2(x=t[0], y=t[1], theta=-theta)
 
 
 class se2:
@@ -76,8 +93,20 @@ class se2:
         return 'x {:g}: y: {:g} theta: {:g}'.format(self.x, self.y, self.theta)
     
     def exp(self):
-        # TODO this is slow, could use analytical version
-        return SE2.from_matrix(scipy.linalg.expm(self.to_matrix()))
+        x = self.x
+        y = self.y
+        theta = self.theta
+        if (np.abs(theta) > 1e-2):
+            a = np.sin(theta)/theta
+            b = (1 - np.cos(theta))/theta
+        else:
+            a = 1 - theta**2/6 + theta**4/120
+            b = theta/2 - theta**3/24 + theta**5/720
+        V = np.array([
+            [a, -b],
+            [b, a]])
+        u = V@np.array([x, y])
+        return SE2(x=u[0], y=u[1], theta=theta)
 
 
 def compute_control(t, x, y, theta, ref_data):

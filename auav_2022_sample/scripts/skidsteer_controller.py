@@ -36,7 +36,7 @@ class RoverController(object):
 
     def follow_reference(self):
         rate = rospy.Rate(10)
-        v  = 0.3
+        v = 0.3
         r = 1.0 
         plot = False
         planner = RoverPlanner(x=0, y=-6, v=v, theta=1.57, r=r)
