@@ -37,16 +37,15 @@ class RoverController(object):
     def follow_reference(self):
         rate = rospy.Rate(10)
         v = 0.3
-        r = 1.0 
+        r = 0.5
         plot = False
         planner = RoverPlanner(x=0, y=-6, v=v, theta=1.57, r=r)
         for i in range(10):
-            planner.goto(0, 0, v, r)
-            planner.goto(0, 6, v, r)
-            planner.goto(3, 6, v, r)
-            planner.goto(3, -6, v, r)
-            planner.goto(0, -6, v, r)
-        planner.stop(0, -6)
+            planner.goto(0.0, 0.0, v, r)
+            planner.goto(-2.0, 0.0, v, r)
+            planner.goto(-2.0, -4.0, v, r)
+            planner.goto(0.0, -4.0, v, r)
+        planner.stop(0.0, -4.0)
 
         ref_data = planner.compute_ref_data(plot=plot)
         if plot:
