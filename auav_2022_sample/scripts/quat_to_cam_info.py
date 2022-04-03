@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import rospy
 from std_msgs.msg import Header
-from geometry_msgs.msg import PoseStamped
-from sensor_msgs.msg import Image, CameraInfo, QuaternionStamped
+from geometry_msgs.msg import PoseStamped, QuaternionStamped
+from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
