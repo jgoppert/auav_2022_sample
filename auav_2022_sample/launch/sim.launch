@@ -12,6 +12,12 @@
   <arg name="world" default="$(find auav_2022_sample)/worlds/trial_1.world"/>
   <arg name="lockstep" default="true"/>
 
+  <!--referee to compute score -->
+  <node name="referee" pkg="auav_2022_sample" type="referee.py" output="screen">
+    <remap from="rover" to="/qualisys/rover/odom"/>
+    <remap from="drone" to="/qualisys/drone/odom"/>
+  </node>
+
   <!-- Launch rqt_reconfigure -->
   <!--<node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />-->
 

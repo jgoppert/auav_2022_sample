@@ -3,7 +3,6 @@ import logging
 import sys
 import matplotlib.pyplot as plt
 from rover_control import compute_control
-import scipy.integrate
 
 
 """
@@ -314,6 +313,7 @@ def simulate_rover(planner: RoverPlanner, plot=False):
 
     t = np.arange(0.1, np.sum(planner.leg_times), 0.1)
     ref_data = planner.compute_ref_data()
+    import scipy.integrate
     res = scipy.integrate.solve_ivp(
         fun=lambda t, x_vect: kinematics(t, x_vect, ref_data),
             t_span=[t[0], t[-1]], y0=[1, 0.1, np.pi],
