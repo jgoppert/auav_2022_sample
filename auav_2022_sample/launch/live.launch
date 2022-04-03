@@ -59,7 +59,11 @@
     <node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>
     
     <!-- Launch object tracking node -->
-    <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/>
+    <!-- <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/> -->
+    <node name="object_tracking" pkg="object_tracking" type="object_tracking_node"/> 
+
+    <!-- Launch dodgy python conversion -->
+    <node name="quat_to_cam_info" pkg="auav_2022_sample" type="quat_to_cam_info.py"/>
 
     <!-- Launch octomap server node -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
