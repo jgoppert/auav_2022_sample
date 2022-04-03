@@ -11,7 +11,6 @@ from std_msgs.msg import Header
 from threading import Thread
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
-
 class MavrosOffboardPosctl(object):
 
     def __init__(self):
@@ -19,11 +18,12 @@ class MavrosOffboardPosctl(object):
         self.imu_data = Imu()
         self.local_position = PoseStamped()
         self.state = State()
+        self.rover_pos = PoseStamped()
 
         self.sub_topics_ready = {
             key: False
             for key in [
-                'ext_state', 'local_pos', 'state', 'imu'
+                'ext_state', 'local_pos', 'state', 'imu',
             ]
         }
 
@@ -41,6 +41,9 @@ class MavrosOffboardPosctl(object):
         self.set_param_srv = rospy.ServiceProxy('mavros/param/set', ParamSet)
 
         # ROS subscribers
+        self.rov_pos_sub = rospy.Subscriber('rover/point',
+                                            PoseStamped,
+                                            self.getthreedpos_callback)
         self.ext_state_sub = rospy.Subscriber('mavros/extended_state',
                                               ExtendedState,
                                               self.extended_state_callback)
@@ -67,6 +70,12 @@ class MavrosOffboardPosctl(object):
     #
     # Callback functions
     #
+    def getthreedpos_callback(self, msg):
+        self.rover_pos = msg
+    '''
+        if not self.sub_topics_ready['rov_pos']:
+            self.sub_topics_ready['rov_pos'] = True
+    '''
     def extended_state_callback(self, data):
         if self.extended_state.vtol_state != data.vtol_state:
             rospy.loginfo("VTOL state changed from {0} to {1}".format(
@@ -324,6 +333,7 @@ class MavrosOffboardPosctl(object):
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 10, -1)
         self.start_sending_position_setpoint()
         rospy.loginfo("4: please put the drone in offboard mode and then arm it")
+        
         positions = (
                 (0, -8, 1, 90),
                 (0, 0, 2, 90),
@@ -331,11 +341,52 @@ class MavrosOffboardPosctl(object):
                 (-3, -7, 1, -90),
                 (0, -8, 1, 90),
                 )
-
+       
         timeout = 1000000
-        for i in range(len(positions)):
-            self.reach_position(positions[i][0], positions[i][1],
-                                positions[i][2], positions[i][3], timeout)
+       
+        
+        while not rospy.is_shutdown():
+            euler_current = euler_from_quaternion(
+                [self.local_position.pose.orientation.x,
+                self.local_position.pose.orientation.y,
+                self.local_position.pose.orientation.z,
+                self.local_position.pose.orientation.w], axes='rzyx')
+
+            dx = self.rover_pos.pose.position.x - self.local_position.pose.position.x
+            dy = self.rover_pos.pose.position.y - self.local_position.pose.position.y
+            dyaw = math.atan(dx/dy)
+            yaw = dyaw + euler_current[0]
+            
+            x = self.rover_pos.pose.position.x + math.sin(dyaw)
+            y = self.rover_pos.pose.position.y - math.cos(dyaw)
+
+            self.reach_position(x,y,1, yaw, timeout)
+       
+            #self.reach_position(positions[i][0], positions[i][1],
+            #                    positions[i][2], positions[i][3], timeout)
+       
+        '''
+        while True:
+
+            euler_current = euler_from_quaternion(
+                [self.local_position.pose.orientation.x,
+                self.local_position.pose.orientation.y,
+                self.local_position.pose.orientation.z,
+                self.local_position.pose.orientation.w], axes='rzyx')
+
+            dx = self.rover_pos.pose.position.x - self.local_position.pose.orientation.x
+            dy = self.rover_pos.pose.position.y - self.local_position.pose.orientation.y
+            dyaw = atan(dx/dy)
+            yaw = dyaw + euler_current[0]
+
+
+            x = self.rover_pose.pose.position.x + math.sin(dyaw)
+            y = self.rover_pose.pose.position.y - math.cos(dyaw) 
+
+
+            self.reach_position(x, y,
+                                1, yaw, 1000000)
+        '''    
 
         rospy.loginfo("5: please land and disarm drone")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 45, 0)
