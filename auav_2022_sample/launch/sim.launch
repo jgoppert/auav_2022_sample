@@ -131,7 +131,7 @@
     </group>
 
     <!-- Launch path_planning node -->
-    <node name="path_planning" pkg="path_planning" type="path_planning_node" output="log"/>
+    <!--<node name="path_planning" pkg="path_planning" type="path_planning_node" output="log"/>-->
 
     <!-- Launch object tracking node -->
     <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py" output="log"/>
