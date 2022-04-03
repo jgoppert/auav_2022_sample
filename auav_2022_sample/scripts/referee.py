@@ -32,7 +32,7 @@ class Referee:
         self.sum += inst_score
         self.samples += 1
         self.score = self.sum/self.samples
-        rospy.loginfo('distnace: %f, inst score: %f, sum: %f samples: %10d, score: %f',
+        rospy.loginfo('distance: %f, inst score: %f, sum: %f samples: %10d, score: %f',
                 distance, inst_score, self.sum, self.samples, self.score)
         self.pub_score.publish(Float32(self.score))
 
