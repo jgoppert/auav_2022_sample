@@ -1,15 +1,45 @@
 <launch>
 
-  <!-- start rover  -->
+  <!--
+  Starts rover as its own master, and connects to qualisys over wifi
+  -->
+
+  <!--qualisys-->
+  <node pkg="qualisys" type="node" name="qualisys" output="screen">
+    <param name="server" value="192.168.123.202"/>
+    <param name="rate_limit" value="10"/>
+  </node>
+
+  pip<!-- start rover  -->
   <group ns="rover" clear_params="true">
+
+
+    <!--qualiysis -->
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+      <remap from="odom" to="/qualisys/rover/odom"/>
+      <param name="child_frame_override" value="rover"/>
+      <param name="parent_frame_override" value="map"/>
+    </node>
 
     <!--rover i2c driver-->
     <node name="rover_i2c_driver" pkg="auav_2022_sample" type="rover_i2c_driver.py" output="screen">
       <remap from='cmd_vel' to='/rover/cmd_vel'/>
     </node>
 
+    <!--scripted rover control-->
+    <node name="skidsteer_controller" pkg="auav_2022_sample" type="skidsteer_controller.py" output="screen">
+      <param name="vehicle_frame" value="rover"/>
+      <param name="map_frame" value="map"/>
+      <param name="mode" value="reference"/>
+      <param name="delay" value="20"/>
+      <param name="v_max" value="0.2"/>
+      <param name="omega_max" value="0.3"/>
+      <remap from="cmd_vel" to="/rover/cmd_vel"/>
+    </node>
   </group>
 
 </launch>
+
+
 
 <!-- vim set ft=xml ts=2 sw=2 et: -->
