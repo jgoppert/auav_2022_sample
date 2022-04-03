@@ -7,13 +7,25 @@
     <param name="rate_limit" value="15"/>
   </node>
 
-  <node pkg="topic_tools" type="relay" name="relay" output="screen" args="/qualisys/$(arg vehicle)/odom /drone/mavros/odometry/out"/>
-  <node pkg="tf" type="static_transform_publisher" name="tf_base_link_pv125"
-    args="0 0 0 0 0 0 base_link $(arg vehicle) 10"/>
-
 
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
+
+    <!--topic relay for mocap-->
+    <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
+
+    <!-- tf frames -->
+    <node name="tf_odom_map" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 0 0 0 map odom "/>
+    <node name="tf_base_link_camera" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+
+    <!--qualiysis -->
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+      <remap from="odom" to="/qualisys/drone/odom"/>
+      <param name="child_frame_override" value="drone"/>
+      <param name="parent_frame_override" value="map"/>
+    </node>
 
     <!-- mavros -->
     <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="log" respawn="false">
@@ -55,9 +67,7 @@
       </include>
     </group>
 
-    <!-- Launch offboard node -->
-    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py"/>
-    
+   
     <!-- Launch object tracking node -->
     <!-- <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/> -->
     <node name="object_tracking" pkg="object_tracking" type="object_tracking_node"/> 
@@ -67,6 +77,9 @@
 
     <!-- Launch roi to point node -->
     <node name="roi_to_point" pkg="auav_2022_sample" type="roi_to_point.py"/>
+
+    <!-- Launch offboard node -->
+    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py"/>
 
     <!-- Launch octomap server node -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
