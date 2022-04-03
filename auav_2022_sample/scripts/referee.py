@@ -10,22 +10,27 @@ class Referee:
     
     def __init__(self):
         rospy.init_node('referee')
-        self.sub_rover = message_filters.Subscriber("rover", Odometry)
-        self.sub_drone = message_filters.Subscriber("drone", Odometry)
-        self.sync = message_filters.TimeSynchronizer([self.sub_rover, self.sub_drone], queue_size=10)
-        self.sync.registerCallback(self.odom_callback)
+        self.sub_rover = rospy.Subscriber("rover", Odometry, self.rover_callback)
+        self.sub_drone = rospy.Subscriber("drone", Odometry, self.drone_callback)
         self.pub_score = rospy.Publisher("score", Float32, queue_size=10)
+        self.drone_position = None
+        self.rover_position = None
         self.sum = 0
         self.samples = 0
         rospy.spin()
 
-    def odom_callback(self, odom_rover, odom_drone):
-        rover_position = odom_rover.pose.pose.position
-        drone_position = odom_drone.pose.pose.position
+    def drone_callback(self, odom):
+        self.drone_position = odom.pose.pose.position
+
+    def rover_callback(self, odom):
+        """score when we see the rover, use last known drone position"""
+        self.rover_position = odom.pose.pose.position
+        if self.drone_position is None:
+            return
         distance = np.linalg.norm(np.array([
-            rover_position.x - drone_position.x,
-            rover_position.y - drone_position.y,
-            rover_position.z - drone_position.z]))
+            self.rover_position.x - self.drone_position.x,
+            self.rover_position.y - self.drone_position.y,
+            self.rover_position.z - self.drone_position.z]))
         inst_score = 0
         if (distance <  5):
             inst_score = 1 - np.abs(distance - 1)/4
