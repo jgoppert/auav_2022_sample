@@ -5,6 +5,7 @@
   <node pkg="qualisys" type="node" name="qualisys" output="screen">
     <param name="server" value="192.168.123.202"/>
     <param name="rate_limit" value="15"/>
+    <param name="parent_frame" value="map"/>
   </node>
 
 
