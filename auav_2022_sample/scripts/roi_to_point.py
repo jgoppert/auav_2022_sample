@@ -43,7 +43,7 @@ class RoiToPoint:
         try:
             trans = self.tfBuffer.lookup_transform('map', 'camera_link', msg.header.stamp, rospy.Duration(0.1)).transform
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-            rospy.logwarn_throttle(10, 'failed to find camera -> base_link:')
+            rospy.logwarn_throttle(10, 'waiting to find camera -> base_link:')
             return
         p_cam = np.array([trans.translation.x, trans.translation.y, trans.translation.z])
         # rospy.loginfo('p_rel: %f %f %f', p_rel[0], p_rel[1], p_rel[2])

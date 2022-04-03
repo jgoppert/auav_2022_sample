@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.linalg
 
 """
 This module impelments an SE2 based rover controler.
