@@ -13,7 +13,7 @@
   <arg name="lockstep" default="true"/>
 
   <!--referee to compute score -->
-  <node name="referee" pkg="auav_2022_sample" type="referee.py" output="screen">
+  <node name="referee" pkg="auav_2022_sample" type="referee.py" output="log">
     <remap from="rover" to="/qualisys/rover/odom"/>
     <remap from="drone" to="/qualisys/drone/odom"/>
   </node>
