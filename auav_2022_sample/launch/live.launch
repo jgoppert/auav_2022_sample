@@ -1,5 +1,5 @@
 <launch>
-  <arg name="vehicle" default="pv125"/>
+  <arg name="vehicle" default="drone"/>
 
   <!--qualisys-->
   <node pkg="qualisys" type="node" name="qualisys" output="screen">
@@ -56,7 +56,7 @@
     </group>
 
     <!-- Launch offboard node -->
-    <node name="offboard_node" pkg="auav_2022_sample" type="offboard_node"/>
+    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py"/>
     
     <!-- Launch object tracking node -->
     <!-- <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py"/> -->
@@ -64,6 +64,9 @@
 
     <!-- Launch dodgy python conversion -->
     <node name="quat_to_cam_info" pkg="auav_2022_sample" type="quat_to_cam_info.py"/>
+
+    <!-- Launch roi to point node -->
+    <node name="roi_to_point" pkg="auav_2022_sample" type="roi_to_point.py"/>
 
     <!-- Launch octomap server node -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
