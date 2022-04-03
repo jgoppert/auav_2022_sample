@@ -16,8 +16,8 @@ class RoverI2cDriver:
     def move(self, vel, omega):
         scale = 2000
         speed_max = 2000
-        lspeed = scale*(-2*vel + 0.5*omega)
-        rspeed = scale*(-2*vel - 0.5*omega)
+        lspeed = scale*(-1*vel + 0.2*omega)
+        rspeed = scale*(-1*vel - 0.2*omega)
         if abs(lspeed) > speed_max:
             lspeed = speed_max*lspeed/abs(lspeed)
         if abs(rspeed) > speed_max:
