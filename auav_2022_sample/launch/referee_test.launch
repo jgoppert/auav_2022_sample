@@ -1,0 +1,43 @@
+<launch>
+  <!--referee to compute score -->
+  <node name="referee" pkg="auav_2022_sample" type="referee.py" output="screen">
+    <remap from="rover" to="/qualisys/rover/odom"/>
+    <remap from="drone" to="/qualisys/drone/odom"/>
+  </node>
+
+  <!--qualisys-->
+  <node pkg="qualisys" type="node" name="qualisys" output="screen">
+    <param name="server" value="192.168.1.2"/>
+    <param name="rate_limit" value="10"/>
+  </node>
+
+  <!-- start rover  -->
+  <group ns="rover" clear_params="true">
+
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+      <remap from="odom" to="/qualisys/rover/odom"/>
+      <param name="child_frame_override" value="rover"/>
+      <param name="parent_frame_override" value="map"/>
+    </node>
+
+  </group>
+
+  <!-- start drone  -->
+  <group ns="drone" clear_params="true">
+
+    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
+      <remap from="odom" to="/qualisys/drone/odom"/>
+      <param name="child_frame_override" value="drone"/>
+      <param name="parent_frame_override" value="map"/>
+    </node>
+
+  </group>
+
+
+
+  <!-- rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner.rviz" />
+
+</launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->

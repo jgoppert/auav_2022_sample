@@ -50,7 +50,7 @@
   <!-- start rover  -->
   <group ns="rover" clear_params="true">
 
-    <!--qualiysis sim-->
+    <!--qualiysis -->
     <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
       <remap from="odom" to="/qualisys/rover/odom"/>
       <param name="child_frame_override" value="rover"/>
@@ -80,7 +80,7 @@
     <node name="tf_base_link_camera" pkg="tf2_ros" type="static_transform_publisher"
       args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
 
-    <!--qualiysis sim-->
+    <!--qualiysis -->
     <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
       <remap from="odom" to="/qualisys/drone/odom"/>
       <param name="child_frame_override" value="drone"/>
