@@ -1,4 +1,5 @@
 models/px4vision/px4vision.sdf
+*.swp
 *.sdf.last_generated
 *.world.last_generated
 models/freenove_4wd/freenove_4wd.sdf

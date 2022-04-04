@@ -6,8 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1
         - /TF1/Frames1
-      Splitter Ratio: 0.5
+      Splitter Ratio: 0.5129740238189697
     Tree Height: 456
   - Class: rviz/Selection
     Name: Selection
@@ -87,30 +88,30 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_link:
-          Value: true
+          Value: false
         base_link_frd:
           Value: false
         camera_color_frame:
-          Value: true
+          Value: false
         camera_color_optical_frame:
-          Value: true
+          Value: false
         camera_depth_frame:
-          Value: true
+          Value: false
         camera_depth_optical_frame:
-          Value: true
+          Value: false
         camera_link:
           Value: false
-        fcu:
-          Value: true
-        local_origin:
-          Value: true
+        drone:
+          Value: false
         map:
-          Value: true
+          Value: false
         map_ned:
           Value: false
         odom:
           Value: false
         odom_ned:
+          Value: false
+        rover:
           Value: false
       Marker Alpha: 1
       Marker Scale: 3
@@ -119,24 +120,26 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        local_origin:
-          map:
-            base_link:
-              base_link_frd:
-                {}
-              fcu:
-                camera_link:
-                  camera_color_frame:
-                    camera_color_optical_frame:
-                      {}
-                  camera_depth_frame:
-                    camera_depth_optical_frame:
-                      {}
-            map_ned:
+        map:
+          base_link:
+            base_link_frd:
               {}
-            odom:
-              odom_ned:
-                {}
+            camera_link:
+              camera_color_frame:
+                camera_color_optical_frame:
+                  {}
+              camera_depth_frame:
+                camera_depth_optical_frame:
+                  {}
+          drone:
+            {}
+          map_ned:
+            {}
+          odom:
+            odom_ned:
+              {}
+          rover:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/MarkerArray
@@ -144,7 +147,7 @@ Visualization Manager:
       Marker Topic: /drone/goal_position
       Name: Goal
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Image
@@ -176,7 +179,7 @@ Visualization Manager:
       Marker Topic: /drone/complete_tree
       Name: RRT Tree
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -184,8 +187,19 @@ Visualization Manager:
       Marker Topic: /drone/tree_path
       Name: Tree Path
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Class: rviz/PointStamped
+      Color: 204; 41; 204
+      Enabled: true
+      History Length: 1
+      Name: PointStamped
+      Queue Size: 10
+      Radius: 0.20000000298023224
+      Topic: /drone/rover/point
+      Unreliable: false
       Value: true
   Enabled: true
   Global Options:
@@ -215,7 +229,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 20.584182739257812
+      Distance: 10.567754745483398
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -231,17 +245,17 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.15039855241775513
+      Pitch: 0.819797158241272
       Target Frame: base_link
-      Yaw: 5.6535844802856445
+      Yaw: 4.083590507507324
     Saved: ~
 Window Geometry:
   Displays:
-    collapsed: false
+    collapsed: true
   Height: 1136
-  Hide Left Dock: false
+  Hide Left Dock: true
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001f7000003d7fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000282000000c900fffffffb0000000a0056006900650077007301000002c50000014f000000a400fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000002ea000000c800000000000000000000000100000189000003d7fc0200000005fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001600560046004800200033004400200043006f00730074010000003d000001f10000001600fffffffb0000002000560046004800200033004400200048006900730074006f006700720061006d0100000234000001e00000001600fffffffb000000080043006f0073007400000001e6000001b50000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073800000039fc0100000002fb0000000800540069006d0065010000000000000738000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000003ac000003d700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001f7000003d7fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000003d00000282000000c900fffffffb0000000a0056006900650077007300000002c50000014f000000a400fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000002ea000000c800000000000000000000000100000189000003d7fc0200000005fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001600560046004800200033004400200043006f00730074010000003d000001f10000001600fffffffb0000002000560046004800200033004400200048006900730074006f006700720061006d0100000234000001e00000001600fffffffb000000080043006f0073007400000001e6000001b50000000000000000fb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073800000039fc0100000002fb0000000800540069006d0065010000000000000738000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000005a9000003d700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -253,7 +267,7 @@ Window Geometry:
   VFH 3D Histogram:
     collapsed: false
   Views:
-    collapsed: false
+    collapsed: true
   Width: 1848
   X: 72
   Y: 27

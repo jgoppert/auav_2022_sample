@@ -298,27 +298,6 @@ class MavrosOffboardPosctl(object):
         quaternion = quaternion_from_euler(0, 0, yaw)
         self.pos.pose.orientation = Quaternion(*quaternion)
 
-        # does it reach the position in 'timeout' seconds?
-        loop_freq = 2  # Hz
-        rate = rospy.Rate(loop_freq)
-        reached = False
-        for i in range(timeout * loop_freq):
-            if self.is_at_position(self.pos.pose.position.x,
-                                   self.pos.pose.position.y,
-                                   self.pos.pose.position.z, self.radius):
-                rospy.loginfo("position reached | seconds: {0} of {1}".format(
-                    i / loop_freq, timeout))
-                reached = True
-                break
-            rate.sleep()
-
-        if not reached:
-            raise IOError(
-                "took too long to get to position | current position x: {0:.2f}, y: {1:.2f}, z: {2:.2f} | timeout(seconds): {3}".
-                format(self.local_position.pose.position.x,
-                       self.local_position.pose.position.y,
-                       self.local_position.pose.position.z, timeout))
-
     def run(self):
         # make sure the simulation is ready to start the mission
         rospy.loginfo("1: waiting for topic")
