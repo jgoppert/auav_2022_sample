@@ -6,8 +6,6 @@ Panels:
       Expanded:
         - /Status1
         - /MarkerArray1/Namespaces1
-        - /TF1
-        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 405
   - Class: rviz/Selection
@@ -116,13 +114,13 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_link:
-          Value: true
+          Value: false
         base_link_frd:
           Value: false
         camera_link:
           Value: true
         drone:
-          Value: true
+          Value: false
         map:
           Value: true
         map_ned:
@@ -222,7 +220,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.55938720703125
+      Distance: 3.819460153579712
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -230,17 +228,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.16472965478897095
+        Y: 0.1418280303478241
+        Z: 0.3375224173069
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3503989279270172
+      Pitch: 0.4753987491130829
       Target Frame: drone
-      Yaw: 5.225432872772217
+      Yaw: 5.060425281524658
     Saved:
       - Class: rviz/Orbit
         Distance: 15

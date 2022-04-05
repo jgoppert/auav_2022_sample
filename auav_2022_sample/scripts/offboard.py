@@ -7,7 +7,7 @@ from mavros_msgs.msg import ExtendedState, State, ParamValue
 from mavros_msgs.srv import ParamGet, ParamSet
 from sensor_msgs.msg import Imu
 from pymavlink import mavutil
-from std_msgs.msg import Header
+from std_msgs.msg import Header, Bool
 from threading import Thread
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
@@ -55,6 +55,9 @@ class MavrosOffboardPosctl(object):
                                               self.local_position_callback)
         self.state_sub = rospy.Subscriber('mavros/state', State,
                                           self.state_callback)
+
+        self.trial_running_pub = rospy.Publisher('trial_running', Bool)
+        self.trial_running = False
 
         self.pos = PoseStamped()
         self.radius = 0.1
@@ -209,13 +212,14 @@ class MavrosOffboardPosctl(object):
         rospy.sleep(10)
 
     def wait_for_landed_state(self, desired_landed_state, timeout, index):
-        rospy.loginfo("waiting for landed state | state: {0}, index: {1}".
-                      format(mavutil.mavlink.enums['MAV_LANDED_STATE'][
-                          desired_landed_state].name, index))
         loop_freq = 10  # Hz
         rate = rospy.Rate(loop_freq)
         landed_state_confirmed = False
         for i in range(timeout * loop_freq):
+            rospy.loginfo_throttle(1, "waiting for landed state | state: {0}, index: {1}".
+                          format(mavutil.mavlink.enums['MAV_LANDED_STATE'][
+                              desired_landed_state].name, index))
+
             if self.extended_state.landed_state == desired_landed_state:
                 landed_state_confirmed = True
                 rospy.loginfo("landed state confirmed | seconds: {0} of {1}".
@@ -268,6 +272,7 @@ class MavrosOffboardPosctl(object):
                     self.pos.pose.position.x,
                     self.pos.pose.position.y,
                     self.pos.pose.position.z))
+            self.trial_running_pub.publish(self.trial_running)
             try:
                 rate.sleep()
             except rospy.exceptions.ROSInterruptException:
@@ -309,6 +314,10 @@ class MavrosOffboardPosctl(object):
         rospy.loginfo("1: waiting for topic")
         self.wait_for_topics(30)
 
+        rospy.loginfo("3: waiting for landed state")
+        self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 10, -1)
+        self.start_sending_position_setpoint()
+
         rospy.loginfo("2: setting parameters")
         self.set_param("EKF2_AID_MASK", 24, timeout=30, is_integer=True)
         self.set_param("EKF2_HGT_MODE", 3, timeout=5, is_integer=True)
@@ -319,6 +328,7 @@ class MavrosOffboardPosctl(object):
         self.set_param("NAV_MC_ALT_RAD", 0.2, timeout=5, is_integer=False)
         self.set_param("RTL_RETURN_ALT", 3.0, timeout=5, is_integer=False)
         self.set_param("RTL_DESCEND_ALT", 1.0, timeout=5, is_integer=False)
+
         # self.set_param("MPC_XY_CRUISE", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_VEL_MANUAL", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_ACC_HOR", 1.0, timeout=5, is_integer=False)
@@ -326,13 +336,18 @@ class MavrosOffboardPosctl(object):
         # self.set_param("MC_PITCHRATE_MAX", 100.0, timeout=5, is_integer=False)
         # self.set_param("MC_ROLLRATE_MAX", 100.0, timeout=5, is_integer=False)
 
-        rospy.loginfo("3: waiting for landed state")
-        self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 10, -1)
-        self.start_sending_position_setpoint()
         rospy.loginfo("4: please tell the drone to takeoff then put the drone in offboard mode")        
+
+        # tell rover and referee it can go
+        rospy.sleep(5)
+        self.trial_running = True
+
+        # waiti for thread termination
         rospy.spin()
+
         rospy.loginfo("5: please land and disarm drone")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 45, 0)
+
         rospy.loginfo("6: done")
         rospy.signal_shutdown('finished script')
 

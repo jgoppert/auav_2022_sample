@@ -2,7 +2,7 @@
 import rospy
 import message_filters
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32, Bool
 import numpy as np
 
 
@@ -13,8 +13,10 @@ class Referee:
         self.sub_rover = rospy.Subscriber("rover", Odometry, self.rover_callback)
         self.sub_drone = rospy.Subscriber("drone", Odometry, self.drone_callback)
         self.pub_score = rospy.Publisher("score", Float32, queue_size=10)
+        self.sub_running = rospy.Subscriber("trial_running", Bool, self.running_callback)
         self.drone_position = None
         self.rover_position = None
+        self.running = False
         self.sum = 0
         self.samples = 0
         rospy.spin()
@@ -25,7 +27,7 @@ class Referee:
     def rover_callback(self, odom):
         """score when we see the rover, use last known drone position"""
         self.rover_position = odom.pose.pose.position
-        if self.drone_position is None:
+        if not self.running or self.drone_position is None:
             return
         distance = np.linalg.norm(np.array([
             self.rover_position.x - self.drone_position.x,
@@ -40,6 +42,9 @@ class Referee:
         rospy.loginfo('distance: %f, inst score: %f, sum: %f samples: %10d, score: %f',
                 distance, inst_score, self.sum, self.samples, self.score)
         self.pub_score.publish(Float32(self.score))
+
+    def running_callback(self, msg):
+        self.running = msg.data
 
 
 if __name__ == "__main__":

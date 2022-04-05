@@ -2,6 +2,7 @@
 import rospy
 import tf2_ros
 import numpy as np
+from std_msgs.msg import Bool
 from geometry_msgs.msg import Twist
 from rover_control import compute_control
 from rover_planning import RoverPlanner
@@ -12,27 +13,34 @@ class RoverController(object):
     def __init__(self):
         rospy.init_node('rover_controller')
         self.pub_cmd = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+        self.sub_running = rospy.Subscriber('trial_running', Bool, self.callback_running)
         self.tfBuffer = tf2_ros.Buffer()
         self.tfListener = tf2_ros.TransformListener(self.tfBuffer)
         self.vehicle_frame = rospy.get_param('~vehicle_frame', 'base_link')
         self.map_frame = rospy.get_param('~map_frame', 'map')
-        self.mode = rospy.get_param('~mode', 'script')  # [script, reference]
         self.delay = rospy.get_param('~delay', 10)  #  delay time
         self.v_max = rospy.get_param('~v_max', 0.2)  #  max velocity
         self.omega_max = rospy.get_param('~omega', 0.3)  #  max rotation rate
+        self.running = False
 
     def __del__(self):
         self.stop()
 
+    def callback_running(self, msg):
+        self.running = msg.data
+
     def run(self):
-        # delay
+        # wait for start
+        rate = rospy.Rate(1)
+        while not rospy.is_shutdown():
+            rospy.loginfo('waiting for trial_running == True')
+            rate.sleep()
+            if self.running:
+                break
         rospy.sleep(self.delay)
 
         # run mode
-        if self.mode == 'script':
-            self.script()
-        elif self.mode == 'reference':
-            self.follow_reference()
+        self.follow_reference()
 
     def follow_reference(self):
         rate = rospy.Rate(10)
