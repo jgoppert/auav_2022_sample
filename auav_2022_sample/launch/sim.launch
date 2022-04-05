@@ -2,6 +2,10 @@
   <!--px4 environment variables-->
   <env name="PX4_SIM_SPEED_FACTOR" value="1"/>
   <arg name="with_fbet" default="false"/>
+  <!--use cam_deg to set your camera angle
+    also set camera angle for your drone in the world.jinja file
+    pitch angle 0 horizontal, 30 (30 degree pitch down)
+   -->
   <arg name="cam_deg" default="0"/>
 
   <!-- gazebo configs -->
