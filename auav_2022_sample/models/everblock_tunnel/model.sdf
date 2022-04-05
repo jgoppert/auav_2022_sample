@@ -3,13 +3,13 @@
   <model name="everblock_tunnel">
 
     <include>
-      <uri>model://everblock_small_black</uri>      
+      <uri>model://everblock_tiny_black</uri>      
       <name>block0</name>
 	  <pose>0 -0.4572 0 0 0 0</pose>
     </include>
 
     <include>
-      <uri>model://everblock_small_black</uri>      
+      <uri>model://everblock_tiny_black</uri>      
       <name>block1</name>
       <pose>0 0.4572 0 0 0 0</pose>
     </include>
@@ -17,14 +17,8 @@
     <include>
       <uri>model://everblock_small_black</uri>      
       <name>block2</name>
-      <pose>0 0.6096 1.0668 1.57 0 0</pose>
+      <pose>0 0.6096 0.6096 1.57 0 0</pose>
     </include>
 
-     <include>
-      <uri>model://everblock_small_black</uri>      
-      <name>block3</name>
-      <pose>0 0.6096 1.2212 1.57 0 0</pose>
-    </include>
- 
   </model>
 </sdf>

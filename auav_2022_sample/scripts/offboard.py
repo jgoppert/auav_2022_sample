@@ -23,7 +23,7 @@ class MavrosOffboardPosctl(object):
         self.sub_topics_ready = {
             key: False
             for key in [
-                'ext_state', 'local_pos', 'state', 'imu', 'rover_pos',
+                'ext_state', 'local_pos', 'state', 'imu',
             ]
         }
 
@@ -72,24 +72,31 @@ class MavrosOffboardPosctl(object):
     #
     def rover_pos_callback(self, msg):
         self.rover_pos = msg
-        if not self.sub_topics_ready['rover_pos']:
-            self.sub_topics_ready['rover_pos'] = True
-
         euler_current = euler_from_quaternion([
             self.local_position.pose.orientation.x,
             self.local_position.pose.orientation.y,
             self.local_position.pose.orientation.z,
             self.local_position.pose.orientation.w], axes='rzyx')
 
-        dx = self.rover_pos.point.x - self.local_position.pose.position.x
-        dy = self.rover_pos.point.y - self.local_position.pose.position.y
-        dyaw = math.atan(dx/dy)
-        yaw = -dyaw + euler_current[0]
-      
-        x = self.rover_pos.point.x + math.sin(dyaw)
-        y = self.rover_pos.point.y - math.cos(dyaw)
+        drone = np.array([
+            self.local_position.pose.position.x,
+            self.local_position.pose.position.y])
 
-        self.goto_position(x=x, y=y, z=0.5, yaw_deg=np.rad2deg(yaw))
+        rover = np.array([
+            self.rover_pos.point.x,
+            self.rover_pos.point.y])
+
+        direction = rover - drone
+        direction /= np.linalg.norm(direction)
+
+        d_separation = 1.0
+        altitude = 0.5
+        
+        p_goal = rover - direction*d_separation
+
+        yaw = np.arctan2(direction[1], direction[0])
+      
+        self.goto_position(x=p_goal[0], y=p_goal[1], z=altitude, yaw_deg=np.rad2deg(yaw))
 
 
     def extended_state_callback(self, data):
@@ -245,7 +252,6 @@ class MavrosOffboardPosctl(object):
         rospy.signal_shutdown('finished script')
         if self.pos_thread.is_alive():
             self.pos_thread.join()
-        super().__del__()
 
     #
     # Helper methods
@@ -309,6 +315,10 @@ class MavrosOffboardPosctl(object):
         self.set_param("EKF2_EV_DELAY", 0.0, timeout=5, is_integer=False)
         self.set_param("MPC_XY_VEL_MAX", 1.0, timeout=5, is_integer=False)
         self.set_param("MC_YAWRATE_MAX", 60.0, timeout=5, is_integer=False)
+        self.set_param("MIS_TAKEOFF_ALT", 1.0, timeout=5, is_integer=False)
+        self.set_param("NAV_MC_ALT_RAD", 0.2, timeout=5, is_integer=False)
+        self.set_param("RTL_RETURN_ALT", 3.0, timeout=5, is_integer=False)
+        self.set_param("RTL_DESCEND_ALT", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_XY_CRUISE", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_VEL_MANUAL", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_ACC_HOR", 1.0, timeout=5, is_integer=False)

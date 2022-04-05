@@ -39,13 +39,13 @@ class RoverController(object):
         v = 0.3
         r = 0.5
         plot = False
-        planner = RoverPlanner(x=0, y=-6, v=v, theta=1.57, r=r)
+        planner = RoverPlanner(x=0, y=2, v=v, theta=1.57, r=r)
         for i in range(10):
-            planner.goto(0.0, 0.0, v, r)
-            planner.goto(-2.0, 0.0, v, r)
-            planner.goto(-2.0, -4.0, v, r)
-            planner.goto(0.0, -4.0, v, r)
-        planner.stop(0.0, -4.0)
+            planner.goto(0.0, 8.0, v, r)
+            planner.goto(-3.0, 8.0, v, r)
+            planner.goto(-3.0, 4.0, v, r)
+            planner.goto(0.0, 4.0, v, r)
+        planner.stop(0.0, 4.0)
 
         ref_data = planner.compute_ref_data(plot=plot)
         if plot:
@@ -95,50 +95,9 @@ class RoverController(object):
         msg.angular.z = omega
         self.pub_cmd.publish(msg)
 
-    def forward(self):
-        rospy.loginfo("forward")
-        self.move(v=self.v_max, omega=0)
-
     def stop(self):
         rospy.loginfo("stop")
         self.move(v=0, omega=0)
-
-    def turn_left(self):
-        rospy.loginfo("turn left")
-        self.move(v=self.v_max, omega=self.omega_max)
-
-    def turn_right(self):
-        rospy.loginfo("turn right")
-        self.move(v=self.v_max, omega=-self.omega_max)
-
-    def rotate_left(self):
-        rospy.loginfo("rotate left")
-        self.move(v=0, omega=self.omega_max)
-
-    def rotate_right(self):
-        rospy.loginfo("rotate right")
-        self.move(v=0, omega=-self.omega_max)
-
-    def script(self):
-        while not rospy.is_shutdown():
-            controller.stop()
-            rospy.sleep(3)
-            controller.forward()
-            rospy.sleep(3)
-            controller.turn_left()
-            rospy.sleep(3)
-            controller.forward()
-            rospy.sleep(3)
-            controller.turn_right()
-            rospy.sleep(3)
-            controller.forward()
-            rospy.sleep(3)
-            controller.rotate_left()
-            rospy.sleep(3)
-            controller.forward()
-            rospy.sleep(3)
-            controller.rotate_right()
-            rospy.sleep(3)
 
 if __name__ == "__main__":
     controller = RoverController()

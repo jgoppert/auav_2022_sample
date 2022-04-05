@@ -12,7 +12,7 @@
 
     <gui>
       <camera name="user_camera">
-        <pose>0 -15 4 0 0.3 1.57</pose>
+        <pose>0 -7 4 0 0.3 1.57</pose>
       </camera>
     </gui>
 
@@ -24,29 +24,26 @@
       </sky>
     </scene>
 
-    {{ freenove_4wd(name='rover', pose=[0, -6, 0, 0, 0, 1.57], with_ball=True)|indent(4) }}
+    {{ freenove_4wd(name='rover', pose=[0, 2, 0.04, 0, 0, 1.57], with_ball=True)|indent(4) }}
 
-    {{ px4vision(name='drone', pose=[0, -8, 0, 0, 0, 1.57], mav_id=0)|indent(4) }}
+    {{ px4vision(name='drone', pose=[0, 0, 0.07, 0, 0, 1.57], mav_id=0, cam_angle=np.deg2rad(30))|indent(4) }}
 
     <include>
       <uri>model://sun</uri>
     </include>
 
     <include>
+      <pose>0 8 0 0 0 0</pose>
       <uri>model://hangar_floor</uri>
     </include>
 
     <include>
+      <pose>0 8 0 0 0 0</pose>
       <uri>model://sample_course_1</uri>
     </include>
 
-    <!--<include>-->
-      <!--<pose>1.5 3 0 0 0 0</pose>-->
-      <!--<uri>model://axial_scx10</uri>-->
-    <!--</include>-->
-
     <include>
-      <pose>-3 -9 0 0 0 2.0</pose>
+      <pose>-3 -1 0 0 0 2.0</pose>
       <uri>model://person_standing</uri>
     </include>
 

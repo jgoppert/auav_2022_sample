@@ -2,6 +2,7 @@
   <!--px4 environment variables-->
   <env name="PX4_SIM_SPEED_FACTOR" value="1"/>
   <arg name="with_fbet" default="false"/>
+  <arg name="cam_deg" default="0"/>
 
   <!-- gazebo configs -->
   <arg name="gui" default="true"/>
@@ -71,6 +72,8 @@
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
 
+    <arg name="cam_rad" default="$(eval -1.5708 - cam_deg*3.1416/180)"/>
+
     <!--topic relay for mocap-->
     <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
 
@@ -78,7 +81,7 @@
     <node name="tf_odom_map" pkg="tf2_ros" type="static_transform_publisher"
       args="0 0 0 0 0 0 map odom "/>
     <node name="tf_base_link_camera" pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+      args="0 0 0 -1.57 0 $(arg cam_rad) base_link camera_link"/>
 
     <!--qualiysis -->
     <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
@@ -121,7 +124,8 @@
     <!--</node>-->
 
     <!-- Launch offboard node -->
-    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen" launch-prefix="xterm -T 'offboard' -e"/>
+  <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen"/>
+    <!--launch-prefix="xterm -T 'offboard' -e"/>-->
 
     <!-- Frontier based exploration -->
     <group if="$(arg with_fbet)">
