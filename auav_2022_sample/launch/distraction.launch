@@ -1,0 +1,15 @@
+<launch>
+
+  <!-- start distration rover  -->
+  <group ns="axial_scx10" clear_params="true">
+
+    <!--keyboard rover control-->
+    <node name="rover_teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e">
+      <remap from='cmd_vel' to='/axial_scx10/cmd_vel'/>
+    </node>
+
+  </group>
+
+</launch>
+
+<!-- vim set ft=xml ts=2 sw=2 et: -->

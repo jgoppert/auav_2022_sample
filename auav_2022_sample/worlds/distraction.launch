@@ -1,14 +1,7 @@
 <launch>
   <!--px4 environment variables-->
   <env name="PX4_SIM_SPEED_FACTOR" value="1"/>
-
-  <!--optional nodes-->
   <arg name="with_fbet" default="false"/>
-  <arg name="with_path_planning" default="false"/>
-  <arg name="with_local_planner" default="false"/>
-  <arg name="with_octomap" default="true"/>
-  <arg name="with_color_tracking" default="true"/>
-
   <!--use cam_deg to set your camera angle
     also set camera angle for your drone in the world.jinja file
     pitch angle 0 horizontal, 30 (30 degree pitch down)
@@ -32,6 +25,9 @@
     <remap from="drone" to="/qualisys/drone/odom"/>
   </node>
 
+  <!-- Launch rqt_reconfigure -->
+  <!--<node pkg="rqt_reconfigure" type="rqt_reconfigure" output="log" name="rqt_reconfigure" />-->
+
   <!--gazebo-->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="gui" value="$(arg gui)"/>
@@ -46,6 +42,17 @@
 
   <!-- rviz -->
   <node name="rviz" pkg="rviz" type="rviz" output="log" args="-d $(find auav_2022_sample)/config/local_planner.rviz" />
+
+  <!-- start distration rover  -->
+  <group ns="axial_scx10" clear_params="true">
+
+    <!--keyboard rover control-->
+    <node name="rover_teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e">
+      <remap from='cmd_vel' to='/axial_scx10/cmd_vel'/>
+    </node>
+
+  </group>
+
 
   <!-- start rover  -->
   <group ns="rover" clear_params="true">
@@ -112,17 +119,15 @@
     </node>
 
     <!-- Launch local planner -->
-    <group if="$(arg with_local_planner)">
-      <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
-      <node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 10; $0 $@' ">
-        <remap from="move_base_simple/goal" to="/move_base_simple/goal"/>
-        <param name="goal_x_param" value="5" />
-        <param name="goal_y_param" value="0"/>
-        <param name="goal_z_param" value="2" />
-        <param name="tree_node_distance_" value="0.5" />
-        <rosparam param="pointcloud_topics">[camera/depth/points]</rosparam>
-      </node>
-    </group>
+    <!-- We sleep 15 seconds before starting avoidance to make sure mavros is running, this prevents error messages while it is waiting-->
+    <!--<node pkg="nodelet" type="nodelet" name="local_planner" args="standalone LocalPlannerNodelet" output="log" launch-prefix="bash -c 'sleep 10; $0 $@' ">-->
+      <!--<remap from="move_base_simple/goal" to="/move_base_simple/goal"/>-->
+      <!--<param name="goal_x_param" value="5" />-->
+      <!--<param name="goal_y_param" value="0"/>-->
+      <!--<param name="goal_z_param" value="2" />-->
+      <!--<param name="tree_node_distance_" value="0.5" />-->
+      <!--<rosparam param="pointcloud_topics">[camera/depth/points]</rosparam>-->
+    <!--</node>-->
 
     <!-- Launch offboard node -->
     <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen" launch-prefix="xterm -T 'offboard' -e">
@@ -137,33 +142,27 @@
     </group>
 
     <!-- Launch path_planning node -->
-    <group if="$(arg with_path_planning)">
-      <node name="path_planning" pkg="path_planning" type="path_planning_node" output="log"/>
-    </group>
+    <!--<node name="path_planning" pkg="path_planning" type="path_planning_node" output="log"/>-->
 
     <!-- Launch object tracking node -->
-    <group if="$(arg with_color_tracking)">
-      <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py" output="log"/>
-      <node name="roi_to_point" pkg="auav_2022_sample" type="roi_to_point.py" output="log"/>
-    </group>
+    <node name="color_tracking" pkg="auav_2022_sample" type="color_tracking.py" output="log"/>
+    <node name="roi_to_point" pkg="auav_2022_sample" type="roi_to_point.py" output="log"/>
 
-    <group if="$(arg with_octomap)">
-      <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
-        <param name="base_frame_id" value="base_link"/>
-        <remap from="cloud_in" to="camera/depth/points"/>
-        <param name="resolution" value="0.2"/>
-        <param name="frame_id" type="string" value="map"/>
-        <param name="sensor_model/max_range" value="10.0"/>
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
+      <param name="base_frame_id" value="base_link"/>
+      <remap from="cloud_in" to="camera/depth/points"/>
+      <param name="resolution" value="0.2"/>
+      <param name="frame_id" type="string" value="map"/>
+      <param name="sensor_model/max_range" value="10.0"/>
 
-        <!--Ground Filter-->
-        <!--<param name="filter_ground" value="true"/>-->
-        <!--<param name="ground_filter/distance" value="0.3"/>-->
+      <!--Ground Filter-->
+      <!--<param name="filter_ground" value="true"/>-->
+      <!--<param name="ground_filter/distance" value="0.3"/>-->
 
-        <!--Alternative is to cut points without using filter if cpu low-->
-        <param name="pointcloud_min_z" value="0.4"/>
-        <param name="pointcloud_max_z" value="3.0"/>
-      </node>
-    </group>
+      <!--Alternative is to cut points without using filter if cpu low-->
+      <param name="pointcloud_min_z" value="0.4"/>
+      <param name="pointcloud_max_z" value="3.0"/>
+    </node>
 
   </group>
 
