@@ -57,8 +57,7 @@ class MavrosOffboardPosctl(object):
         self.state_sub = rospy.Subscriber('mavros/state', State,
                                           self.state_callback)
 
-        self.trial_running_pub = rospy.Publisher('trial_running', Bool, queue_size=10)
-        self.trial_running = False
+        self.ready_pub = rospy.Publisher('ready', Bool, queue_size=10)
 
         self.pos = PoseStamped()
         self.radius = 0.1
@@ -252,7 +251,6 @@ class MavrosOffboardPosctl(object):
                     self.pos.pose.position.x,
                     self.pos.pose.position.y,
                     self.pos.pose.position.z))
-            self.trial_running_pub.publish(self.trial_running)
             try:
                 rate.sleep()
             except rospy.ROSInterruptException:
@@ -291,12 +289,13 @@ class MavrosOffboardPosctl(object):
 
     def run(self):
         # make sure the simulation is ready to start the mission
-        rospy.logwarn("do not takeoff until instructed")
-        rospy.logwarn("waiting for topic")
-        self.wait_for_topics()
+        self.ready_pub.publish(False)
 
         rospy.logwarn("waiting for landed state")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND)
+
+        rospy.logwarn("waiting for topic")
+        self.wait_for_topics()
 
         rospy.logwarn("setting parameters")
         self.set_param("EKF2_AID_MASK", 24, timeout=30, is_integer=True)
@@ -324,7 +323,7 @@ class MavrosOffboardPosctl(object):
         self.wait_for_mode('OFFBOARD')
 
         # tell rover and referee it can go
-        self.trial_running = True
+        self.ready_pub.publish(True)
 
         # waiti for thread termination
         rospy.spin()

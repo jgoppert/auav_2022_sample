@@ -13,11 +13,12 @@ class Referee:
         self.sub_rover = rospy.Subscriber("rover", Odometry, self.rover_callback)
         self.sub_drone = rospy.Subscriber("drone", Odometry, self.drone_callback)
         self.pub_score = rospy.Publisher("score", Float32, queue_size=10)
-        self.sub_running = rospy.Subscriber("trial_running", Bool, self.running_callback)
-        self.duration = rospy.get_param('~duration', 1000)
+        self.sub_drone_ready = rospy.Subscriber("drone_ready", Bool, self.drone_ready_callback)
+        self.sub_rover_finished = rospy.Subscriber("rover_finished", Bool, self.rover_finished_callback)
         self.drone_position = None
         self.rover_position = None
-        self.running = False
+        self.drone_ready = False
+        self.rover_finished = False
         self.start = None
         self.sum = 0
         self.samples = 0
@@ -29,15 +30,11 @@ class Referee:
     def rover_callback(self, odom):
         """score when we see the rover, use last known drone position"""
         self.rover_position = odom.pose.pose.position
-        now = rospy.Time.now()
 
-        # if not started and we have drone and running command, start
-        if self.start is None:
-            if self.running and self.drone_position is not None:
-                self.start = now
-
-        # if past duration, stop scoring
-        if self.start is not None and (now - self.start).to_sec() > self.duration:
+        # if time expired
+        if self.rover_finished:
+            rospy.logwarn('trial finished, final score: %f', self.score)
+            rospy.signal_shutdown('finished')
             return
 
         # abort if no drone position
@@ -58,8 +55,12 @@ class Referee:
                 distance, inst_score, self.sum, self.samples, self.score)
         self.pub_score.publish(Float32(self.score))
 
-    def running_callback(self, msg):
-        self.running = msg.data
+    def drone_ready_callback(self, msg):
+        self.drone_ready = msg.data
+
+    def rover_finished_callback(self, msg):
+        self.rover_finished = msg.data
+
 
 
 if __name__ == "__main__":

@@ -13,7 +13,8 @@ class RoverController(object):
     def __init__(self):
         rospy.init_node('rover_controller')
         self.pub_cmd = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-        self.sub_running = rospy.Subscriber('trial_running', Bool, self.callback_running)
+        self.sub_ready = rospy.Subscriber('ready', Bool, self.callback_ready)
+        self.pub_finished = rospy.Publisher('finished', Bool, queue_size=10)
         self.tfBuffer = tf2_ros.Buffer()
         self.tfListener = tf2_ros.TransformListener(self.tfBuffer)
         self.vehicle_frame = rospy.get_param('~vehicle_frame', 'base_link')
@@ -21,28 +22,34 @@ class RoverController(object):
         self.delay = rospy.get_param('~delay', 10)  #  delay time
         self.v_max = rospy.get_param('~v_max', 0.2)  #  max velocity
         self.omega_max = rospy.get_param('~omega', 0.3)  #  max rotation rate
-        self.running = False
+        self.ready = False
         self.run()
 
     def __del__(self):
         self.stop()
 
-    def callback_running(self, msg):
-        self.running = msg.data
+    def callback_ready(self, msg):
+        self.ready = msg.data
 
     def run(self):
-        # wait for start
+        self.pub_finished.publish(False)
+
+        # wait for drone ready
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            rospy.logdebug_throttle(10, 'waiting for trial_running')
+            rospy.logdebug_throttle(10, 'waiting for ready')
             rate.sleep()
-            if self.running:
+            if self.ready:
                 rospy.loginfo('trial is running')
                 break
+
+        # delay before start
         rospy.sleep(self.delay)
 
         # run mode
         self.follow_reference()
+        self.pub_finished.publish(True)
+        rospy.loginfo('rover trajectory finished')
 
     def follow_reference(self):
         rate = rospy.Rate(10)
@@ -50,12 +57,13 @@ class RoverController(object):
         r = 0.5
         plot = False
         planner = RoverPlanner(x=0, y=2, v=v, theta=1.57, r=r)
-        for i in range(10):
+        for i in range(2):
             planner.goto(0.0, 8.0, v, r)
             planner.goto(-3.0, 8.0, v, r)
             planner.goto(-3.0, 4.0, v, r)
             planner.goto(0.0, 4.0, v, r)
         planner.stop(0.0, 4.0)
+        tf = np.sum(planner.leg_times)
 
         ref_data = planner.compute_ref_data(plot=plot)
         if plot:
@@ -79,6 +87,8 @@ class RoverController(object):
 
             # calculate elapsed time
             t = (rospy.Time.now() - start).to_sec()
+            if t > tf:
+                break
 
             # get current SE2 pose
             x = trans.transform.translation.x

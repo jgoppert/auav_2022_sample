@@ -19,7 +19,8 @@
 
   <!--referee to compute score -->
   <node name="referee" pkg="auav_2022_sample" type="referee.py" output="log">
-    <remap from="trial_running" to="/drone/trial_running"/>
+    <remap from="drone_ready" to="drone/ready"/>
+    <remap from="rover_finished" to="rover/finished"/>
     <remap from="rover" to="/qualisys/rover/odom"/>
     <remap from="drone" to="/qualisys/drone/odom"/>
   </node>
@@ -70,8 +71,7 @@
       <param name="delay" value="5"/>
       <param name="v_max" value="0.2"/>
       <param name="omega_max" value="0.3"/>
-      <remap from="cmd_vel" to="/rover/cmd_vel"/>
-      <remap from="trial_running" to="/drone/trial_running"/>
+      <remap from="ready" to="/drone/ready"/>
     </node>
   </group>
 
@@ -130,7 +130,9 @@
     <!--</node>-->
 
     <!-- Launch offboard node -->
-    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen" launch-prefix="xterm -T 'offboard' -e"/>
+    <node name="offboard_node" pkg="auav_2022_sample" type="offboard.py" output="screen" launch-prefix="xterm -T 'offboard' -e">
+      <remap from="rover_finished" to="rover/finished"/>
+    </node>
 
     <!-- Frontier based exploration -->
     <group if="$(arg with_fbet)">
