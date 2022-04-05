@@ -329,7 +329,7 @@ class MavrosOffboardPosctl(object):
         rospy.loginfo("3: waiting for landed state")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 10, -1)
         self.start_sending_position_setpoint()
-        rospy.loginfo("4: please put the drone in offboard mode and then arm it")        
+        rospy.loginfo("4: please tell the drone to takeoff then put the drone in offboard mode")        
         rospy.spin()
         rospy.loginfo("5: please land and disarm drone")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND, 45, 0)

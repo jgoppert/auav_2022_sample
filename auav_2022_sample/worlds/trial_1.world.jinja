@@ -26,7 +26,7 @@
 
     {{ freenove_4wd(name='rover', pose=[0, 2, 0.04, 0, 0, 1.57], with_ball=True)|indent(4) }}
 
-    {{ px4vision(name='drone', pose=[0, 0, 0.07, 0, 0, 1.57], mav_id=0, cam_angle=np.deg2rad(30))|indent(4) }}
+    {{ px4vision(name='drone', pose=[0, 0, 0.07, 0, 0, 1.57], mav_id=0, cam_angle=np.deg2rad(0))|indent(4) }}
 
     <include>
       <uri>model://sun</uri>
