@@ -14,9 +14,11 @@ class Referee:
         self.sub_drone = rospy.Subscriber("drone", Odometry, self.drone_callback)
         self.pub_score = rospy.Publisher("score", Float32, queue_size=10)
         self.sub_running = rospy.Subscriber("trial_running", Bool, self.running_callback)
+        self.duration = rospy.get_param('~duration', 1000)
         self.drone_position = None
         self.rover_position = None
         self.running = False
+        self.start = None
         self.sum = 0
         self.samples = 0
         rospy.spin()
@@ -27,8 +29,21 @@ class Referee:
     def rover_callback(self, odom):
         """score when we see the rover, use last known drone position"""
         self.rover_position = odom.pose.pose.position
-        if not self.running or self.drone_position is None:
+        now = rospy.Time.now()
+
+        # if not started and we have drone and running command, start
+        if self.start is None:
+            if self.running and self.drone_position is not None:
+                self.start = now
+
+        # if past duration, stop scoring
+        if self.start is not None and (now - self.start).to_sec() > self.duration:
             return
+
+        # abort if no drone position
+        if self.drone_position is None:
+            return
+
         distance = np.linalg.norm(np.array([
             self.rover_position.x - self.drone_position.x,
             self.rover_position.y - self.drone_position.y,

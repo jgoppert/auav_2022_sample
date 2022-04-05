@@ -77,4 +77,7 @@ class ColorDetection:
 
 
 if __name__ == '__main__':
-    ColorDetection()
+    try:
+        ColorDetection()
+    except rospy.ROSInterruptException:
+        pass

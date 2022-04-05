@@ -22,6 +22,7 @@ class RoverController(object):
         self.v_max = rospy.get_param('~v_max', 0.2)  #  max velocity
         self.omega_max = rospy.get_param('~omega', 0.3)  #  max rotation rate
         self.running = False
+        self.run()
 
     def __del__(self):
         self.stop()
@@ -33,9 +34,10 @@ class RoverController(object):
         # wait for start
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            rospy.loginfo('waiting for trial_running == True')
+            rospy.logdebug_throttle(10, 'waiting for trial_running')
             rate.sleep()
             if self.running:
+                rospy.loginfo('trial is running')
                 break
         rospy.sleep(self.delay)
 
@@ -108,7 +110,9 @@ class RoverController(object):
         self.move(v=0, omega=0)
 
 if __name__ == "__main__":
-    controller = RoverController()
-    controller.run()
+    try:
+        RoverController()
+    except rospy.ROSInterruptException:
+        pass
 
 #  vim: set et fenc=utf-8 ff=unix sts=4 sw=4 ts=4 : 
