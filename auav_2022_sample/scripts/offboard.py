@@ -294,9 +294,6 @@ class MavrosOffboardPosctl(object):
         rospy.logwarn("waiting for landed state")
         self.wait_for_landed_state(mavutil.mavlink.MAV_LANDED_STATE_ON_GROUND)
 
-        rospy.logwarn("waiting for topic")
-        self.wait_for_topics()
-
         rospy.logwarn("setting parameters")
         self.set_param("EKF2_AID_MASK", 24, timeout=30, is_integer=True)
         self.set_param("EKF2_HGT_MODE", 3, timeout=5, is_integer=True)
@@ -307,6 +304,9 @@ class MavrosOffboardPosctl(object):
         self.set_param("NAV_MC_ALT_RAD", 0.2, timeout=5, is_integer=False)
         self.set_param("RTL_RETURN_ALT", 3.0, timeout=5, is_integer=False)
         self.set_param("RTL_DESCEND_ALT", 1.0, timeout=5, is_integer=False)
+
+        rospy.logwarn("waiting for topic")
+        self.wait_for_topics()
 
         # self.set_param("MPC_XY_CRUISE", 1.0, timeout=5, is_integer=False)
         # self.set_param("MPC_VEL_MANUAL", 1.0, timeout=5, is_integer=False)
