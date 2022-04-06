@@ -9,6 +9,7 @@ sudo apt install xterm
 
 Build the catkin workspace.
 ```bash
+pip3 install pymavlink --user
 mkidr ~/catkin
 cd ~/catkin
 mkdir src
