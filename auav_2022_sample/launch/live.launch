@@ -1,11 +1,17 @@
 <launch>
   <arg name="vehicle" default="drone"/>
 
+  <arg name="with_record" default="false"/>
+
+  <group if="$(arg with_record)">
+    <node name="record" pkg="rosbag" type="record" args="-a"/>
+  </group>
+
   <!--qualisys-->
   <node pkg="qualisys" type="node" name="qualisys" output="screen">
     <param name="server" value="192.168.123.202"/>
-    <param name="rate_limit" value="15"/>
-    <param name="parent_frame" value="map"/>
+    <param name="rate_limit" value="10"/>
+    <param name="parent_frame" value="odom"/>
   </node>
 
 
@@ -16,17 +22,17 @@
     <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
 
     <!-- tf frames -->
-    <node name="tf_odom_map" pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 0 0 0 map odom "/>
     <node name="tf_base_link_camera" pkg="tf2_ros" type="static_transform_publisher"
-      args="0 0 0 -1.57 0 -1.57 base_link camera_link"/>
+      args="0 0 0 0 0 0 base_link camera_link"/>
+    <node name="tf_base_link_drone" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 0 0 0 base_link drone"/>
 
     <!--qualiysis -->
-    <node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">
-      <remap from="odom" to="/qualisys/drone/odom"/>
-      <param name="child_frame_override" value="drone"/>
-      <param name="parent_frame_override" value="map"/>
-    </node>
+    <!--<node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">-->
+      <!--<remap from="odom" to="/qualisys/drone/odom"/>-->
+      <!--<param name="child_frame_override" value="base_link"/>-->
+      <!--<param name="parent_frame_override" value="odom"/>-->
+    <!--</node>-->
 
     <!-- mavros -->
     <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="log" respawn="false">
@@ -51,10 +57,10 @@
         <arg name="json_file_path"    value="$(arg json_file_path)"/>
         <arg name="depth_width"       value="640"/>
         <arg name="depth_height"      value="480"/>
-        <arg name="depth_fps"         value="15"/>
+        <arg name="depth_fps"         value="6"/>
         <arg name="color_width"       value="640"/>
         <arg name="color_height"      value="480"/>
-        <arg name="color_fps"         value="15"/>
+        <arg name="color_fps"         value="6"/>
         <arg name="enable_depth"      value="true"/>
         <arg name="enable_color"      value="true"/>
         <arg name="enable_infra1"     value="false"/>
@@ -84,19 +90,23 @@
 
     <!-- Launch octomap server node -->
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="log" launch-prefix="bash -c 'sleep 20; $0 $@'">
-      <param name="base_frame_id" value="drone"/>
-      <remap from="cloud_in" to="camera/depth/points"/>
-      <param name="resolution" value="0.2"/>
+      <param name="base_frame_id" value="base_link"/>
+      <remap from="cloud_in" to="camera/depth/color/points"/>
+      <param name="resolution" value="0.1"/>
       <param name="frame_id" type="string" value="map"/>
-      <param name="sensor_model/max_range" value="10.0"/>
+      <param name="sensor_model/max_range" value="4.0"/>
+      <param name="sensor_model/hit" value="0.7"/>
+      <param name="sensor_model/miss" value="0.4"/>
+      <param name="sensor_model/min" value="0.12"/>
+      <param name="sensor_model/max" value="0.97"/>
 
       <!--Ground Filter-->
       <!--<param name="filter_ground" value="true"/>-->
       <!--<param name="ground_filter/distance" value="0.3"/>-->
 
       <!--Alternative is to cut points without using filter if cpu low-->
-      <param name="pointcloud_min_z" value="0.4"/>
-      <param name="pointcloud_max_z" value="3.0"/>
+      <param name="pointcloud_min_z" value="0.5"/>
+      <param name="pointcloud_max_z" value="2.15"/>
     </node>
 
   </group>
