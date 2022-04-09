@@ -2,6 +2,7 @@
   <arg name="vehicle" default="drone"/>
 
   <arg name="with_record" default="false"/>
+  <arg name="cam_deg" default="20"/>
 
   <group if="$(arg with_record)">
     <node name="record" pkg="rosbag" type="record" args="-a"/>
@@ -17,6 +18,7 @@
 
   <!-- start drone  -->
   <group ns="drone" clear_params="true">
+    <arg name="cam_rad" default="$(eval -1.5708 - cam_deg*3.1416/180)"/>
 
     <!--topic relay for mocap-->
     <node pkg="topic_tools" type="relay" name="relay" output="log" args="/qualisys/drone/odom /drone/mavros/odometry/out"/>
@@ -26,6 +28,8 @@
       args="0 0 0 0 0 0 base_link camera_link"/>
     <node name="tf_base_link_drone" pkg="tf2_ros" type="static_transform_publisher"
       args="0 0 0 0 0 0 base_link drone"/>
+    <node name="tf_cv_camera" pkg="tf2_ros" type="static_transform_publisher"
+      args="0 0 0 -1.57 0 $(arg cam_rad) base_link cv_camera_link"/>
 
     <!--qualiysis -->
     <!--<node name="odom_to_tf" pkg="auav_2022_sample" type="odom_to_tf.py" output="log">-->
