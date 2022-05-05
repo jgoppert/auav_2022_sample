@@ -19,7 +19,7 @@ class RoiToPoint:
         self.pub_point = rospy.Publisher("rover/point", PointStamped, queue_size=1)
 
         self.camera_proj = None
-        self.object_height = rospy.get_param('object_height', 0.15)
+        self.object_width = rospy.get_param('object_width', 0.06)
         self.tfBuffer = tf2_ros.Buffer()
         self.tfListener = tf2_ros.TransformListener(self.tfBuffer)
         rospy.spin()
@@ -35,13 +35,13 @@ class RoiToPoint:
         # see https://mayavan95.medium.com/3d-position-estimation-of-a-known-object-using-a-single-camera-7a82b37b326b
         if msg.roi.width <= 0:
             return
-        z = (f_x*self.object_height)/msg.roi.height - 0.5
+        z = (f_x*self.object_width)/msg.roi.width
         x = ((msg.roi.x_offset + msg.roi.width/2 - c_x)*z)/f_x
         y = ((msg.roi.y_offset + msg.roi.height/2 - c_y)*z)/f_y
         p_rel = np.array([x, y, z])
 
         try:
-            trans = self.tfBuffer.lookup_transform('map', 'cv_camera_link', msg.header.stamp, rospy.Duration(0.1)).transform
+            trans = self.tfBuffer.lookup_transform('map', 'camera_link', msg.header.stamp, rospy.Duration(0.1)).transform
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             rospy.loginfo_throttle(10, 'waiting to find camera -> base_link:')
             return
