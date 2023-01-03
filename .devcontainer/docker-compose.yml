@@ -1,0 +1,32 @@
+version: "3.9"
+
+volumes:
+    # remembers ignition config, downloaded models etc
+    ignition_config:
+
+services:
+
+  auav:
+    image: jgoppert/auav_23_ros1:latest
+    build:
+      context: .
+    tty: true
+    stdin_open: true
+    privileged: true
+    hostname: auav
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - ./workdir:/workdir
+      - ..:/workdir/src/
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ignition_config:/home/user/.ignition:rw
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
