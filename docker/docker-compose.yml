@@ -1,0 +1,28 @@
+version: "3.9"
+
+volumes:
+
+    # remembers gz config, downloaded models etc
+    gz_config:
+
+services:
+
+  auav:
+    environment:
+      - DISPLAY=$DISPLAY
+      - RUN_VNC=false
+    container_name: auav
+    image: ${REGISTRY}/jgoppert/auav:${TAG}
+    build:
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    privileged: true
+    hostname: auav
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    volumes:
+      - ./ws:/home/user/ws
+      - ..:/home/user/ws/src/auav_2022_sample
+      - gz_config:/home/user/.gazebo
+      - /tmp/.X11-unix:/tmp/.X11-unix

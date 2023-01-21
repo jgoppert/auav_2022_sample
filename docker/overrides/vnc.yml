@@ -1,0 +1,9 @@
+services:
+
+  auav:
+
+    environment:
+      - DISPLAY=:20
+      - RUN_VNC=true
+    ports:
+      - 5920:5920

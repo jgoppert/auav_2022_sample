@@ -1,0 +1,7 @@
+{
+  "name": "auav",
+  "dockerComposeFile": ["docker/docker-compose.yml", "docker/docker-compose.override.yml"],
+  "service": "auav",
+  "workspaceFolder": "/home/user/ws",
+  "shutdownAction": "stopCompose"
+}
