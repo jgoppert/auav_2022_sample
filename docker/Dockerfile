@@ -5,7 +5,6 @@ LABEL maintainer="James Goppert <james.goppert@gmail.com>"
 ENV XDG_RUNTIME_DIR=/tmp/runtime-docker
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=all
-ENV GZ_PARTITION=auav
 ENV TERM=xterm-256color
 ENV DISPLAY=:20
 ENV PATH="/home/user/bin:${PATH}"
@@ -72,11 +71,14 @@ RUN cd /tmp && \
 COPY install/open_vino.sh /tmp/install/open_vino.sh
 RUN /tmp/install/open_vino.sh && /docker_clean.sh
 
-COPY install/extra.sh /tmp/install/extra.sh
-RUN /tmp/install/extra.sh && /docker_clean.sh
-
 COPY install/install_geographiclib_datasets.sh /tmp/install/install_geographiclib_datasets.sh
 RUN sudo /tmp/install/install_geographiclib_datasets.sh && /docker_clean.sh
+
+COPY install/qgc.sh /tmp/install/qgc.sh
+RUN /tmp/install/qgc.sh && /docker_clean.sh
+
+COPY install/extra.sh /tmp/install/extra.sh
+RUN /tmp/install/extra.sh && /docker_clean.sh
 
 # enable apt auto-completion by deleting autoclean task
 RUN sudo rm /etc/apt/apt.conf.d/docker-clean
@@ -97,6 +99,11 @@ RUN /tmp/install/user_setup.sh $VNCPASSWD && /docker_clean.sh
 VOLUME /home/user/.gz
 RUN mkdir -p /home/user/.gz && \
   chown -R user:user /home/user/.gz
+
+# create setting directory for qgroundcontrol
+VOLUME /home/user/.config/QGroundControl.org
+RUN mkdir -p /home/user/.config/QGroundControl.org && \
+  chown -R user:user /home/user/.config/QGroundControl.org
 
 # create workspace, this is where the source code will be mounted
 VOLUME /home/user/ws

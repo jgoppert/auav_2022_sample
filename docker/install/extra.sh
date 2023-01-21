@@ -27,8 +27,17 @@ sudo DEBIAN_FRONTEND=noninteractive  apt-get install --no-install-recommends -y 
 	xvfb
 
 sudo DEBIAN_FRONTEND=noninteractive  apt-get install --no-install-recommends -y \
-	geographiclib-tools \
-	libgeographic-dev \
+	vim \
+	gstreamer1.0-plugins-bad \
+	gstreamer1.0-libav \
+	gstreamer1.0-gl \
+	libqt5gui5 \
+	bash-completion \
+	libfuse3-3 \
+	fuse \
+	libcanberra-gtk-module \
+	libpulse-mainloop-glib0 \
+	ca-certificates \
 	libgstreamer-plugins-bad1.0-dev \
 	libgstreamer-plugins-base1.0-dev \
 	libgstreamer-plugins-good1.0-dev \
@@ -39,7 +48,6 @@ sudo DEBIAN_FRONTEND=noninteractive  apt-get install --no-install-recommends -y 
 	python3-toml \
 	ros-noetic-fcl \
 	ros-noetic-fcl-catkin \
-	ros-noetic-geographic-msgs \
 	ros-noetic-octomap-ros \
 	ros-noetic-octomap-server \
 	ros-noetic-ompl \

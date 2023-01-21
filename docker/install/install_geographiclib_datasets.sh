@@ -1,4 +1,13 @@
 #!/bin/bash
+set -e
+
+apt -y update
+apt -y upgrade
+DEBIAN_FRONTEND=noninteractive  apt-get install --no-install-recommends -y \
+	geographiclib-tools \
+	libgeographic-dev \
+	ros-noetic-geographic-msgs
+
 # Script to install the model datasets required
 # to GeographicLib apply certain conversions
 

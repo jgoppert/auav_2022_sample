@@ -1,14 +1,5 @@
 version: "3.9"
 
-networks:
-
-  # create a local network
-  app_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "172.16.238.0/24"
-
 volumes:
 
     # remembers qgroundcontrol config
@@ -27,6 +18,7 @@ services:
     image: ${REGISTRY}/jgoppert/auav:${TAG}
     build:
       dockerfile: Dockerfile
+    privileged: true
     tty: true
     stdin_open: true
     hostname: auav
@@ -34,27 +26,5 @@ services:
       - ./ws:/home/user/ws
       - ..:/home/user/ws/src/auav_2022_sample
       - gz_config:/home/user/.gazebo
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    networks:
-      app_net:
-        ipv4_address: 172.16.238.2
-
-  qgc:
-    environment:
-      - DISPLAY=$DISPLAY
-    container_name: auav-qgc
-    image: ${REGISTRY}/jgoppert/auav-qgc:${TAG}
-    build:
-      dockerfile: Dockerfile-QGC
-    privileged: true # necessary to run AppImage
-    tty: true
-    stdin_open: true
-    hostname: qgc
-    command: ./QGroundControl.AppImage
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      # create a persistant named volume to remember qgc settings
       - qgroundcontrol_config:/home/docker/.config/QGroundControl.org
-    networks:
-      app_net:
-        ipv4_address: 172.16.238.3
+      - /tmp/.X11-unix:/tmp/.X11-unix
