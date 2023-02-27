@@ -29,6 +29,9 @@ class Referee:
 
     def rover_callback(self, odom):
         """score when we see the rover, use last known drone position"""
+        if not self.drone_ready:
+            return
+        
         self.rover_position = odom.pose.pose.position
 
         # if time expired
